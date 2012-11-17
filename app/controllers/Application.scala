@@ -10,13 +10,6 @@ import anorm.SqlParser._
 
 object Application extends Controller {
 
-  val task = {
-    get[Long]("id") ~
-      get[String]("label") map {
-        case id ~ label => Task(id, label)
-      }
-  }
-
   def tasks = Action {
     Ok(views.html.index(Task.all(), taskForm))
   }
