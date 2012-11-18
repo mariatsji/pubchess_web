@@ -5,8 +5,8 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 
-case class Player(id: Long, name: String, elo: Double) {
-
+case class Player(id: Long, name: String, elo: Double){
+  override def toString = name + " (" + elo + ")"
 }
 
 object Player {
@@ -44,5 +44,6 @@ object Player {
       SQL("UPDATE PLAYER SET name={name}, elo={elo} WHERE id={id}").on("id" -> id, "name" -> name, "elo" -> elo).executeUpdate()
     }
   }
+  
 
 }
