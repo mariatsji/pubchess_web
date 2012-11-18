@@ -28,14 +28,14 @@ object Player {
 
   def create(name: String, elo: Double) {
     DB.withConnection { implicit c =>
-      SQL("INSERT INTO PLAYER (name, elo) VAUES ({name}, {elo})").on(
+      SQL("INSERT INTO PLAYER (name, elo) VALUES ({name}, {elo})").on(
         "name" -> name, "elo" -> elo).executeUpdate()
     }
   }
 
   def delete(id: Long) {
     DB.withConnection { implicit c =>
-      SQL("DELETE FROM PLAYER WHERE id = {id})").on("id" -> id).executeUpdate()
+      SQL("DELETE FROM PLAYER WHERE id = {id}").on("id" -> id).executeUpdate()
     }
   }
 

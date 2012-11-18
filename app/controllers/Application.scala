@@ -5,8 +5,6 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Task
-import anorm._
-import anorm.SqlParser._
 
 object Application extends Controller {
 
@@ -29,7 +27,8 @@ object Application extends Controller {
   }
 
   def index = Action {
-    Redirect(routes.Application.tasks)
+    //Redirect(routes.Application.index)
+    Ok("Index..")
   }
 
   val taskForm = Form(

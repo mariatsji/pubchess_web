@@ -1,0 +1,23 @@
+@(players: List[Player], playerForm: Form[String])
+@import helper._
+
+@main("PubChess Players") {
+	<h1>@players.size player(s)</h1>
+	
+	<ul>
+		@players.map { player =>
+		<li>
+		@player.name (@player.elo)
+		@form(routes.ChessApplication.deletePlayer(player.id)) {
+			<input type="submit" value="Delete"/>
+		}
+		</li>
+		}
+	</ul>
+	
+	<h2>Add a new player</h2>
+	@form(routes.ChessApplication.newPlayer) {
+		@inputText(playerForm("name"))
+		<input type="submit" value="Create"/>
+	}
+}

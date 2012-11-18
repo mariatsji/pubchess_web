@@ -10,4 +10,9 @@ GET     /tasks                  controllers.Application.tasks
 POST    /tasks                  controllers.Application.newTask
 POST    /tasks/:id/delete       controllers.Application.deleteTask(id: Long)
 
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+# Players
+GET		/players				controllers.ChessApplication.players
+POST	/players				controllers.ChessApplication.newPlayer
+POST	/players/:id/delete		controllers.ChessApplication.deletePlayer(id: Long)
+
+GET     /assets/*file           controllers.Assets.at(path="/public", file)
