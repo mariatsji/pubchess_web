@@ -11,13 +11,17 @@ case class Tournament()
 object Tournament {
 
   def createSingle(players: List[Player]) =
-    if(players.size > 1) {
-	    for {
-	      player <- players
-	      step <- 1 until players.size
-	      if((players.indexOf(player) + step) < players.length)
-	    } yield new Match(player, players(players.indexOf(player) + step))
-    } else {
-      Nil
-    }
+    for {
+      player <- players
+      step <- 1 until players.size
+      if ((players.indexOf(player) + step) < players.length)
+    } yield new Match(player, players(players.indexOf(player) + step))
+
+  def createDouble(players: List[Player]) = {
+      val single = createSingle(players)
+      val rev = for {
+    	  m <- single
+      } yield new Match(m.black, m.white)
+      single ++ rev
+  }
 }

@@ -6,10 +6,18 @@ import anorm._
 import anorm.SqlParser._
 import java.sql.Date
 
-case class Match(white: Player, black:Player){
+case class Match(var white: Player, var black:Player){
+  
   override def toString = "[" + white + "] vs [" + black + "]"
+  
+  def swap(){
+    val tmp = white
+    white = black
+    black = tmp
+  }
+  
 }
 
 object Match {
-
+  
 }
