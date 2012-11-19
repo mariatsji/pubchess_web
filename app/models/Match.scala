@@ -1,23 +1,9 @@
 package models
 
-import play.api.db._
-import play.api.Play.current
-import anorm._
-import anorm.SqlParser._
-import java.sql.Date
+class Match(white: Player, black:Player, var result: Int) {
 
-case class Match(var white: Player, var black:Player){
+  def this(p: Pairing) = this(p.a, p.b, -1)
   
-  override def toString = "[" + white + "] vs [" + black + "]"
-  
-  def swap(){
-    val tmp = white
-    white = black
-    black = tmp
-  }
-  
-}
-
-object Match {
+  def setResult(i: Int) = result = i
   
 }

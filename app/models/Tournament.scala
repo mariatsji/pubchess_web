@@ -6,7 +6,7 @@ import anorm._
 import anorm.SqlParser._
 import java.sql.Date
 
-case class Tournament()
+case class Tournament(id: Long, desc: String, var matches: List[Match], var played: Date)
 
 object Tournament {
 
@@ -15,13 +15,13 @@ object Tournament {
       player <- players
       step <- 1 until players.size
       if ((players.indexOf(player) + step) < players.length)
-    } yield new Match(player, players(players.indexOf(player) + step))
+    } yield new Pairing(player, players(players.indexOf(player) + step))
 
   def createDouble(players: List[Player]) = {
       val single = createSingle(players)
       val rev = for {
-    	  m <- single
-      } yield new Match(m.black, m.white)
+    	  p <- single
+      } yield p.swap
       single ++ rev
   }
 }
