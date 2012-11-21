@@ -5,7 +5,8 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import models.Player
-
+import models.Tournament
+import java.util.Date
 
 object ChessApplication extends Controller {
 
@@ -25,8 +26,29 @@ object ChessApplication extends Controller {
   }
   
   def deletePlayer(id: Long) = Action { implicit request =>
-  	Player.delete(id);
+  	Player.delete(id)
   	Redirect(routes.ChessApplication.players)
+  }
+  
+  def tournaments = Action {
+    Ok(views.html.tournaments(Tournament.all(), tournamentForm))
+  }
+  
+  val tournamentForm = Form("name" -> nonEmptyText)
+  
+  def newTournament = Action { implicit request =>
+    tournamentForm.bindFromRequest.fold(
+      errors => BadRequest("Bad request " + errors),
+      name => {
+        Tournament.create(name, new Date())
+        Redirect(routes.ChessApplication.tournaments)
+      }
+    )
+  }
+  
+  def deleteTournament(id: Long) = Action { implicit request =>
+    Tournament.delete(id)
+    Redirect(routes.ChessApplication.tournaments)
   }
   
 }

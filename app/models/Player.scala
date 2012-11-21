@@ -44,6 +44,5 @@ object Player {
       SQL("UPDATE PLAYER SET name={name}, elo={elo} WHERE id={id}").on("id" -> id, "name" -> name, "elo" -> elo).executeUpdate()
     }
   }
-  
 
 }

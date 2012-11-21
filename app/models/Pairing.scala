@@ -14,19 +14,9 @@ case class Pairing(var a:Player, var b:Player) {
   def swap():Pairing = {
     new Pairing(this.b, this.a)
   }
+  
 }
 
 object Pairing {
-  
-  /**
-   * The rowparser
-   */
-  val tournament = {
-    get[Long]("id") ~
-      get[String]("name") ~
-      get[Double]("elo") map {
-        case id ~ name ~ elo => Player(id, name, elo)
-      }
-  }
   
 }

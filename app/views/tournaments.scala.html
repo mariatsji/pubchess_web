@@ -1,0 +1,23 @@
+@(tournaments: List[Tournament], tournamentForm: Form[String])
+@import helper._
+
+@main("PubChess Tournaments") {
+	<h1>@tournaments.size tournament(s)</h1>
+
+	<ul>
+		@tournaments.map { tournament =>
+			<li>
+			@tournament.desc (@tournament.played)
+			@form(routes.ChessApplication.deleteTournament(tournament.id)) {
+				<input type="submit" value="Delete"/>
+			}
+			</li>
+		}
+	</ul>
+	
+	<h2>Add new tournament</h2>
+	@form(routes.ChessApplication.newTournament) {
+		@inputText(tournamentForm("name"))
+		<input type="submit" value="Create"/>
+	}
+}
