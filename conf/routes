@@ -14,5 +14,8 @@ POST	/players/:id/delete		controllers.ChessApplication.deletePlayer(id: Long)
 GET		/tournaments			controllers.ChessApplication.tournaments
 POST	/tournaments			controllers.ChessApplication.newTournament
 POST	/tournaments/:id/delete	controllers.ChessApplication.deleteTournament(id: Long)
+ 
+# Setup Tournament
+GET		/addplayers/{id}		controllers.ChessApplication.addPlayers(id: Long)
 
 GET     /assets/*file           controllers.Assets.at(path="/public", file)

@@ -25,6 +25,10 @@ object Tournament {
     SQL("SELECT * FROM TOURNAMENT").as(tournament *)
   }
   
+  def getOne(id: Long) : Tournament = DB.withConnection { implicit c =>
+    SQL("SELECT * FROM TOURNAMENT WHERE ID={id}").on("id" -> id).as(tournament *).head
+  }
+  
   def create(desc: String, played: Date) {
     DB.withConnection { implicit c =>
       SQL("INSERT INTO TOURNAMENT (desc, played) VALUES ({desc}, {played})")

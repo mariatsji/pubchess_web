@@ -1,0 +1,14 @@
+@(players: List[Player], tournament: Tournament)
+@import helper._
+
+@main("Add players to Tournament"){
+	<h1>Add players</h1>
+	
+	<ul>
+		@players.map { player =>
+		<li>
+		@player.name (@player.elo)
+		</li>
+		}
+	</ul>
+}

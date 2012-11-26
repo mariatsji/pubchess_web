@@ -7,7 +7,7 @@
 	<ul>
 		@tournaments.map { tournament =>
 			<li>
-			@tournament.desc (@tournament.played)
+			<a href="/addplayers/@tournament.id">@tournament.desc</a> (@tournament.played)
 			@form(routes.ChessApplication.deleteTournament(tournament.id)) {
 				<input type="submit" value="Delete"/>
 			}

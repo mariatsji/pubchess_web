@@ -51,4 +51,8 @@ object ChessApplication extends Controller {
     Redirect(routes.ChessApplication.tournaments)
   }
   
+  def addPlayers(id: Long) = Action { implicit request =>
+    Ok(views.html.addplayers(Player.all(), Tournament.getOne(id)))
+  }
+  
 }
