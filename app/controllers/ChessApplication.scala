@@ -34,6 +34,10 @@ object ChessApplication extends Controller {
     Ok(views.html.tournaments(Tournament.all(), tournamentForm))
   }
   
+  def addPlayers(id: Long) = Action {
+    Ok(views.html.addplayers(Player.all(), Tournament.getOne(id)))
+  }
+  
   val tournamentForm = Form("name" -> nonEmptyText)
   
   def newTournament = Action { implicit request =>
@@ -49,10 +53,6 @@ object ChessApplication extends Controller {
   def deleteTournament(id: Long) = Action { implicit request =>
     Tournament.delete(id)
     Redirect(routes.ChessApplication.tournaments)
-  }
-  
-  def addPlayers(id: Long) = Action { implicit request =>
-    Ok(views.html.addplayers(Player.all(), Tournament.getOne(id)))
   }
   
 }
