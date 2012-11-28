@@ -29,10 +29,12 @@ object ChessApplication extends Controller {
   	Redirect(routes.ChessApplication.players)
   }
   
-  def startTournament(tournamentid :Long) = Action { implicit request =>
-    
-    //val pairings = Tournament.createDouble(Player.getList(playerIds));
-    Ok("You sent me : " + tournamentid + " with request " + request)
+  def startTournament(tournamentId :Long) = Action { implicit request =>
+    val playerIds : List[Long] = request.queryString("selectedplayers").map(
+      s => s.toLong
+    ).toList
+    val pairings = Tournament.createDouble(Player.getList(playerIds));
+    Ok(views.html.start(Tournament.getOne(tournamentId), pairings))
   }
   
   def tournaments = Action {
