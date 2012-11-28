@@ -1,0 +1,14 @@
+@(tournament: Tournament, pairings: List[Pairing])
+
+@import helper._
+
+@main("Start tournament") {
+	<h1>Start tournament @tournament</h1>
+	<p>
+		<ul>
+		<li>@pairings.length</li>
+		</ul>
+	</p>
+
+
+}
