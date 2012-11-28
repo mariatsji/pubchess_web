@@ -4,8 +4,7 @@ import play.api._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
-import models.Player
-import models.Tournament
+import models._
 import java.util.Date
 
 object ChessApplication extends Controller {
@@ -28,6 +27,12 @@ object ChessApplication extends Controller {
   def deletePlayer(id: Long) = Action { implicit request =>
   	Player.delete(id)
   	Redirect(routes.ChessApplication.players)
+  }
+  
+  def startTournament(tournamentid :Long) = Action { implicit request =>
+    
+    //val pairings = Tournament.createDouble(Player.getList(playerIds));
+    Ok("You sent me : " + tournamentid + " with request " + request)
   }
   
   def tournaments = Action {
