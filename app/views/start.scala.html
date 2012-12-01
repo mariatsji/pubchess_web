@@ -3,10 +3,12 @@
 @import helper._
 
 @main("Start tournament") {
-	<h1>Start tournament @tournament</h1>
+	<h1>Start tournament @tournament.desc</h1>
 	<p>
 		<ul>
-		<li>@pairings.length</li>
+		@pairings.map { pairing =>
+			<li>@pairing.a vs @pairing.b</li>
+		}
 		</ul>
 	</p>
 

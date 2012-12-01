@@ -45,8 +45,8 @@ object Player {
     }
   }
   
-  def getList(ids: List[Long]) : List[Player] = {
-    Player.all().filter(id=>ids.contains(id))
+  def getSome(ids: List[Long]) : List[Player] = {
+    Player.all().filter(p => ids.contains(p.id))
   }
 
 }

@@ -33,7 +33,7 @@ object ChessApplication extends Controller {
     val playerIds : List[Long] = request.queryString("selectedplayers").map(
       s => s.toLong
     ).toList
-    val pairings = Tournament.createDouble(Player.getList(playerIds));
+    val pairings = Tournament.createDouble(Player.getSome(playerIds));
     Ok(views.html.start(Tournament.getOne(tournamentId), pairings))
   }
   
