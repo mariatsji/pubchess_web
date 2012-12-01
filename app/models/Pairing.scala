@@ -4,6 +4,7 @@ import play.api.db._
 import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
+import scala.util.Random
 
 case class Pairing(var a:Player, var b:Player) {
   
@@ -18,5 +19,7 @@ case class Pairing(var a:Player, var b:Player) {
 }
 
 object Pairing {
+  
+  def shuffle(pairings: List[Pairing]) = Random.shuffle(pairings)
   
 }

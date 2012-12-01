@@ -43,6 +43,9 @@ object Tournament {
     }
   }
   
+  def create(players: List[Player], double: Boolean) =
+    if(double) createDouble(players) else createSingle(players)
+  
   def createSingle(players: List[Player]) =
     for {
       player <- players
