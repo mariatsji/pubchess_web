@@ -1,4 +1,4 @@
-# Tasks schema
+# Tournament schema
  
 # --- !Ups
 

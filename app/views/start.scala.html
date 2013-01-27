@@ -1,4 +1,4 @@
-@(tournament: Tournament, pairings: List[Pairing])
+@(tournament: Tournament, battles: List[Battle])
 
 @import helper._
 
@@ -6,9 +6,16 @@
 	<h1>Start tournament @tournament.desc</h1>
 	<p>
 		<ul>
-		@pairings.map { pairing =>
-			<li>@pairing.a vs @pairing.b</li>
-		}
+		@battles.map { battle =>
+        @form(routes.ChessApplication.battles(tournament.id)) {
+                <li>
+                    @Player.getOne(battle.white) vs @Player.getOne(battle.black)
+                <input type="radio" name="winner" value="white">White</input>
+                <input type="radio" name="winner" value="draw">Draw</input>
+                <input type="radio" name="winner" value="black">Black</input>
+                </li>
+            }
+        }
 		</ul>
 	</p>
 

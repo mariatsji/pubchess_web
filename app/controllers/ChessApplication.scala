@@ -1,6 +1,5 @@
 package controllers
 
-import play.api._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
@@ -13,6 +12,10 @@ object ChessApplication extends Controller {
     Ok(views.html.players(Player.all(), playerForm))
   }
 
+  def battles(tournamentId: Long) = Action {
+    Ok(views.html.start(Tournament.getOne(tournamentId), Battle.allInTournament(tournamentId)))
+  }
+
   val playerForm = Form("name" -> nonEmptyText)
 
   def newPlayer = Action { implicit request =>
@@ -20,13 +23,13 @@ object ChessApplication extends Controller {
       errors => BadRequest("Bad request " + errors),
       name => {
         Player.create(name, 1200: Double)
-        Redirect(routes.ChessApplication.players)
+        Redirect(routes.ChessApplication.players())
       })
   }
 
   def deletePlayer(id: Long) = Action { implicit request =>
     Player.delete(id)
-    Redirect(routes.ChessApplication.players)
+    Redirect(routes.ChessApplication.players())
   }
 
   def startTournament(tournamentId: Long) = Action { implicit request =>
@@ -41,14 +44,22 @@ object ChessApplication extends Controller {
         case _ => true
       }
     } catch {
-      case e: NoSuchElementException => false;
+      case e: NoSuchElementException => false
     }
-    val pairings = Tournament.create(Player.getSome(playerIds), isDouble);
+    val tournament = Tournament.getOne(tournamentId)
+    val pairings = Tournament.createPairings(Player.getSome(playerIds), isDouble)
+    pairings.foreach(Battle.create(_, tournament))
+    val battles = Battle.allInTournament(tournamentId)
     if (playerIds.length > 0) {
-      Ok(views.html.start(Tournament.getOne(tournamentId), pairings))
+      Ok(views.html.start(Tournament.getOne(tournamentId), battles))
     } else {
       Ok("No players added, did you select any?")
     }
+  }
+
+  def setResult(battle: Battle) = Action {
+    implicit request =>
+      Ok("Awesome")
   }
 
   def tournaments = Action {
@@ -66,13 +77,13 @@ object ChessApplication extends Controller {
       errors => BadRequest("Bad request " + errors),
       name => {
         Tournament.create(name, new Date())
-        Redirect(routes.ChessApplication.tournaments)
+        Redirect(routes.ChessApplication.tournaments())
       })
   }
 
   def deleteTournament(id: Long) = Action { implicit request =>
     Tournament.delete(id)
-    Redirect(routes.ChessApplication.tournaments)
+    Redirect(routes.ChessApplication.tournaments())
   }
 
 }

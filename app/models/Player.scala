@@ -5,7 +5,7 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 
-case class Player(id: Long, name: String, elo: Double){
+case class Player(val id: Long, val name: String, val elo: Double) {
   override def toString = name + " (" + elo + ")"
 }
 
@@ -18,35 +18,46 @@ object Player {
     get[Long]("id") ~
       get[String]("name") ~
       get[Double]("elo") map {
-        case id ~ name ~ elo => Player(id, name, elo)
-      }
+      case id ~ name ~ elo => Player(id, name, elo)
+    }
   }
 
-  def all(): List[Player] = DB.withConnection { implicit c =>
-    SQL("SELECT * FROM PLAYER").as(player *)
+  def all(): List[Player] = DB.withConnection {
+    implicit c =>
+      SQL("SELECT * FROM PLAYER").as(player *)
   }
 
   def create(name: String, elo: Double) {
-    DB.withConnection { implicit c =>
-      SQL("INSERT INTO PLAYER (name, elo) VALUES ({name}, {elo})").on(
-        "name" -> name, "elo" -> elo).executeUpdate()
+    DB.withConnection {
+      implicit c =>
+        SQL("INSERT INTO PLAYER (name, elo) VALUES ({name}, {elo})").on(
+          "name" -> name, "elo" -> elo).executeUpdate()
     }
   }
 
   def delete(id: Long) {
-    DB.withConnection { implicit c =>
-      SQL("DELETE FROM PLAYER WHERE id = {id}").on("id" -> id).executeUpdate()
+    DB.withConnection {
+      implicit c =>
+        SQL("DELETE FROM PLAYER WHERE id = {id}").on("id" -> id).executeUpdate()
     }
   }
 
   def update(id: Long, name: String, elo: Double) {
-    DB.withConnection { implicit c =>
-      SQL("UPDATE PLAYER SET name={name}, elo={elo} WHERE id={id}").on("id" -> id, "name" -> name, "elo" -> elo).executeUpdate()
+    DB.withConnection {
+      implicit c =>
+        SQL("UPDATE PLAYER SET name={name}, elo={elo} WHERE id={id}").on("id" -> id, "name" -> name, "elo" -> elo).executeUpdate()
     }
   }
-  
-  def getSome(ids: List[Long]) : List[Player] = {
+
+  def getSome(ids: List[Long]): List[Player] = {
     Player.all().filter(p => ids.contains(p.id))
+  }
+
+  def getOne(id: Long): Player = {
+    DB.withConnection {
+      implicit c =>
+        SQL("SELECT * FROM PLAYER WHERE id={id}").on("id"->id).as(player *).head
+    }
   }
 
 }
