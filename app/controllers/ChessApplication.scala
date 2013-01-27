@@ -43,9 +43,7 @@ object ChessApplication extends Controller {
     } catch {
       case e: NoSuchElementException => false;
     }
-    val pairings = Tournament.create(
-      Player.getSome(playerIds),
-      isDouble);
+    val pairings = Tournament.create(Player.getSome(playerIds), isDouble);
     if (playerIds.length > 0) {
       Ok(views.html.start(Tournament.getOne(tournamentId), pairings))
     } else {

@@ -15,7 +15,6 @@ class TournamentSpec extends Specification {
     val p5 = new Player(5, "5", 1200)
     val players = List(p1, p2, p3, p4, p5)
     val pairings = Tournament.createSingle(players)
-    pairings.foreach(println)
     "contain 10 pairings" in {
       pairings must have size(10)
     }
@@ -92,7 +91,6 @@ class TournamentSpec extends Specification {
     val p2 = new Player(2, "2", 1200)
     val p3 = new Player(3, "3", 1200)
     val pairings = Tournament.createDouble(List(p1,p2,p3))
-    pairings.foreach(println)
     "be size 6" in {
       pairings must have size(6)
     }
@@ -119,6 +117,32 @@ class TournamentSpec extends Specification {
     "contain 3 and 2" in {
       pairings(5).a mustEqual(p3)
       pairings(5).b mustEqual(p2)
+    }
+  }
+
+  "single random tournament" in {
+    val p1 = new Player(1, "1", 1200)
+    val p2 = new Player(2, "2", 1200)
+    val p3 = new Player(3, "3", 1200)
+    val pairings = Tournament.createSingleRandom(List(p1,p2,p3))
+    "be size 3" in {
+      pairings must have size(3)
+    }
+  }
+
+  "single random tournament" in {
+    val p1 = new Player(1, "1", 1200)
+    val p2 = new Player(2, "2", 1200)
+    val p3 = new Player(3, "3", 1200)
+    val pairings = Tournament.createSingleRandom(List(p1,p2,p3))
+    pairings.foreach(println)
+    "contain no pairing twice" in {
+      pairings(0) must not be pairings(1)
+      pairings(0) must not be pairings(2)
+      pairings(1) must not be pairings(2)
+      pairings(0) must not be pairings(1).swap()
+      pairings(0) must not be pairings(2).swap()
+      pairings(1) must not be pairings(2).swap()
     }
   }
 }
