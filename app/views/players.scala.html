@@ -7,7 +7,7 @@
 	<ul>
 		@players.map { player =>
 		<li>
-		@player.name (@player.elo)
+		@player.name
 		@form(routes.ChessApplication.deletePlayer(player.id)) {
 			<input type="submit" value="Delete"/>
 		}

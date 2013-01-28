@@ -22,7 +22,7 @@ object ChessApplication extends Controller {
     playerForm.bindFromRequest.fold(
       errors => BadRequest("Bad request " + errors),
       name => {
-        Player.create(name, 1200: Double)
+        Player.create(name)
         Redirect(routes.ChessApplication.players())
       })
   }
