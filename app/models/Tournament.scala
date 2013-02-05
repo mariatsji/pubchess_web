@@ -5,47 +5,45 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 import java.util.Date
-import util.Random
 
-case class Tournament(val id: Long, val desc: String, var played: Date)
+case class Tournament(id: Long, desc: String, var played: Date)
 
 object Tournament {
 
+  def createDoublePairings(players: List[Player]) : List[Pairing] = {
+    val single = createSinglePairings(players)
+    single ++ single.map(_.swapped())
+  }
+
+  def createSinglePairings(players: List[Player]) : List[Pairing] = {
+    chopFromBothEnds(swapEveryOther(naivePairs(players)))
+  }
+
+  private def naivePairs(players:List[Player]): List[Pairing] = {
+    for {
+      white <- players
+      black <- players.dropWhile(_ != white)
+      if(white != black)
+    } yield new Pairing(white,black)
+  }
+
+  private def swapEveryOther(pairs: List[Pairing]) : List[Pairing] = {
+    pairs.map((p: Pairing) => if (pairs.indexOf(p) % 2 == 0) p.swapped() else p)
+  }
+
+  private def chopFromBothEnds(pairs: List[Pairing]) : List[Pairing] = {
+    def recursive(pairz: List[Pairing], buffer: List[Pairing]) : List[Pairing] =
+      if (pairz.isEmpty)
+        buffer
+      else {
+        val reversed = pairz.reverse
+        recursive(reversed.tail, (buffer :+ reversed.head))
+      }
+    recursive(pairs, List[Pairing]())
+  }
+
   def createPairings(players: List[Player], double: Boolean) =
     if (double) createDoublePairings(players) else createSinglePairings(players)
-
-  def createSinglePairings(players: List[Player]) =
-    for {
-      player <- players
-      step <- 1 until players.size
-      if ((players.indexOf(player) + step) < players.length)
-    } yield new Pairing(player, players(players.indexOf(player) + step))
-
-  def createDoublePairings(players: List[Player]) = {
-    val single = createSinglePairings(players)
-    val rev = for {
-      p <- single
-    } yield p.swap()
-    single ++ rev
-  }
-
-  def createDoubleRandom(players: List[Player]) = {
-    for {
-      white <- Random.shuffle(players)
-      black <- Random.shuffle(players)
-      if (white.id != black.id)
-    } yield new Pairing(white, black)
-  }
-
-  def createSingleRandom(players: List[Player]) = {
-    val doublePairings = createDoubleRandom(players)
-    doublePairings.filter(hasDuplicateLaterInPairingList(_, doublePairings))
-  }
-
-  private def hasDuplicateLaterInPairingList(thisPairing: Pairing, pairings: List[Pairing]): Boolean = {
-    val counterPart = thisPairing.swap()
-    pairings.contains(counterPart) && pairings.indexOf(counterPart) > pairings.indexOf(thisPairing)
-  }
 
   /**
    * The rowparser
