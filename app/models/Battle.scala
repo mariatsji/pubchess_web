@@ -4,19 +4,24 @@ import anorm._
 import anorm.SqlParser._
 import play.api.db._
 import play.api.Play.current
-import java.util.Date
 
 class Battle(val white: Long, val black: Long, var result: Int, val tournament: Long) {
 
   def this(p: Pairing, t: Tournament) = this(p.a.id, p.b.id, -1, t.id)
 
-  def setResult(i: Int) = {
+  def setResult(i: Int) {
     result = i
   }
 
 }
 
 object Battle {
+
+  def createBattles(pairs: List[Pairing], tournament: Tournament) = {
+    for {
+      pair <- pairs
+    } yield create(pair, tournament)
+  }
 
   /**
    * The rowparser
@@ -46,16 +51,30 @@ object Battle {
   def allEverBlackMatchesForPlayer(player: Long): List[Battle] =
     allEverMatchesForPlayer(player).filter((b: Battle) => (b.white == player): Boolean)
 
-  def create(white: Long, black: Long, tournament: Long) {
+  def create(white: Long, black: Long, tournament: Long): Option[Battle] = {
     DB.withConnection {
       implicit c =>
         SQL("INSERT INTO battle (white,black,result,tournament) VALUES ({white}, {black}, -1, {tournament})")
-          .on("white" -> white, "black" -> black).on("tournament" -> tournament).executeUpdate()
+          .on("white" -> white, "black" -> black).on("tournament" -> tournament).executeInsert()
+        match {
+          case Some(id: Long) => Some(Battle.getOne(id))
+          case None => None
+        }
     }
   }
 
-  def create(pairing: Pairing, tournament: Tournament) {
-    create(pairing.a.id, pairing.b.id, tournament.id)
+  def getOne(id: Long): Battle = {
+    DB.withConnection {
+      implicit c =>
+        SQL("SELECT * FROM battle WHERE id={id}").on("id" -> id).as(battle *).head
+    }
+  }
+
+  def create(pairing: Pairing, tournament: Tournament): Option[Battle] = {
+    create(pairing.a.id, pairing.b.id, tournament.id) match {
+      case Some(createdBattle) => Some(createdBattle)
+      case None => None
+    }
   }
 
   def setResult(battleid: Long, result: Int) {

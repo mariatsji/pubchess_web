@@ -58,18 +58,18 @@ object Tournament {
 
   def all(): List[Tournament] = DB.withConnection {
     implicit c =>
-      SQL("SELECT * FROM TOURNAMENT").as(tournament *)
+      SQL("SELECT * FROM tournament").as(tournament *)
   }
 
   def getOne(id: Long): Tournament = DB.withConnection {
     implicit c =>
-      SQL("SELECT * FROM TOURNAMENT WHERE ID={id}").on("id" -> id).as(tournament *).head
+      SQL("SELECT * FROM tournament WHERE id={id}").on("id" -> id).as(tournament *).head
   }
 
   def create(desc: String, played: Date) {
     DB.withConnection {
       implicit c =>
-        SQL("INSERT INTO TOURNAMENT (desc, played) VALUES ({desc}, {played})")
+        SQL("INSERT INTO tournament (desc, played) VALUES ({desc}, {played})")
           .on("desc" -> desc, "played" -> played).executeUpdate()
     }
   }
@@ -77,7 +77,7 @@ object Tournament {
   def delete(id: Long) {
     DB.withConnection {
       implicit c =>
-        SQL("DELETE FROM TOURNAMENT WHERE ID={id}")
+        SQL("DELETE FROM tournament WHERE id={id}")
           .on("id" -> id).executeUpdate()
     }
   }

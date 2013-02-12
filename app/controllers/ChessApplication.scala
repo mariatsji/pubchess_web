@@ -32,28 +32,20 @@ object ChessApplication extends Controller {
     Redirect(routes.ChessApplication.players())
   }
 
-  def startTournament(tournamentId: Long) = Action { implicit request =>
+  def startTournamentSingle(tournamentId: Long) = Action { implicit request =>
     val playerIds: List[Long] = try {
       request.queryString("selectedplayers").map(
         s => s.toLong).toList
     } catch {
       case e: NoSuchElementException => List()
     }
-    val isDouble = try {
-      request.queryString("double") match {
-        case _ => true
-      }
-    } catch {
-      case e: NoSuchElementException => false
-    }
     val tournament = Tournament.getOne(tournamentId)
-    val pairings = Tournament.createPairings(Player.getSome(playerIds), isDouble)
-    pairings.foreach(Battle.create(_, tournament))
-    val battles = Battle.allInTournament(tournamentId)
-    if (playerIds.length > 0) {
+    val pairings = Tournament.createSinglePairings(Player.getSome(playerIds))
+    val battles = Battle.createBattles(pairings, tournament).flatten
+    if (battles.length > 0) {
       Ok(views.html.start(Tournament.getOne(tournamentId), battles))
     } else {
-      Ok("No players added, did you select any?")
+      Ok("No battles were generated, did you select any players?")
     }
   }
 

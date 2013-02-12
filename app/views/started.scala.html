@@ -1,0 +1,27 @@
+@(tournament: Tournament, battles: List[Battle])
+
+@import helper._
+
+@main("Started tournament") {
+	<h1>Tournament @tournament.desc ready</h1>
+	<p>
+		<ul>
+		@battles.map { battle =>
+            <li>
+                @Player.getOne(battle.white) vs @Player.getOne(battle.black)
+                <input type="radio" name="winner" value="white">White</input>
+                <input type="radio" name="winner" value="draw">Draw</input>
+                <input type="radio" name="winner" value="black">Black</input>
+                <input type="text" name="whitebeers"/>
+                <label for="whitebeers">#Beers White</label>
+                <input type="text" name="blackbeers"/>
+                <label for="blackbeers">#Beers Black</label>
+
+            </li>
+        }
+		</ul>
+        <input type="submit" value="Complete"/>
+	</p>
+
+
+}

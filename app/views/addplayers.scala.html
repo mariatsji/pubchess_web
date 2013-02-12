@@ -4,20 +4,18 @@
 @main("Add players to Tournament"){
 	<h1>Add players to [@tournament.desc]</h1>
 	<p>(@tournament.played)</p>
-	
+
 	<p>
-	@form(routes.ChessApplication.startTournament(tournament.id)) {
+	@form(routes.ChessApplication.startTournamentSingle(tournament.id)) {
 		<select name="selectedplayers" multiple="multiple">
 			@players.map { player =>
 				<option value="@player.id">@player.name</option>
 	  		}
 		</select>
-		<label for="double">Dobbel</label>
-		<input type="checkbox" checked="checked" value="true" name="double"/>
 		<input type="submit" value="Start"/>
 	}
 	</p>
-	
+
 	<p><a href="/players">Players</a></p><p><a href="/tournaments">Tournaments</a></p>
 	
 }
