@@ -7,12 +7,19 @@ import play.api.Play.current
 
 class Battle(val white: Long, val black: Long, var result: Int, val tournament: Long) {
 
-  def this(p: Pairing, t: Tournament) = this(p.a.id, p.b.id, -1, t.id)
+  def this(p: Pairing, t: Tournament) = this(p.a.id, p.b.id, Outcome.UNPLAYED, t.id)
 
   def setResult(i: Int) {
     result = i
   }
 
+}
+
+object Outcome extends Enumeration {
+  val DRAW = 0
+  val UNPLAYED = -1
+  val WHITE_WIN = 1
+  val BLACK_WIN = 2
 }
 
 object Battle {
@@ -51,30 +58,29 @@ object Battle {
   def allEverBlackMatchesForPlayer(player: Long): List[Battle] =
     allEverMatchesForPlayer(player).filter((b: Battle) => (b.white == player): Boolean)
 
-  def create(white: Long, black: Long, tournament: Long): Option[Battle] = {
+  def create(white: Long, black: Long, tournament: Long): Battle = {
     DB.withConnection {
       implicit c =>
         SQL("INSERT INTO battle (white,black,result,tournament) VALUES ({white}, {black}, -1, {tournament})")
           .on("white" -> white, "black" -> black).on("tournament" -> tournament).executeInsert()
-        match {
-          case Some(id: Long) => Some(Battle.getOne(id))
-          case None => None
-        }
+
+    } match {
+      case Some(id: Long) => Battle.getById(id)
+      case None => throw new Exception(
+        "SQL Error - Did not save Battle"
+      )
     }
   }
 
-  def getOne(id: Long): Battle = {
+  def getById(id: Long): Battle = {
     DB.withConnection {
       implicit c =>
         SQL("SELECT * FROM battle WHERE id={id}").on("id" -> id).as(battle *).head
     }
   }
 
-  def create(pairing: Pairing, tournament: Tournament): Option[Battle] = {
-    create(pairing.a.id, pairing.b.id, tournament.id) match {
-      case Some(createdBattle) => Some(createdBattle)
-      case None => None
-    }
+  def create(pairing: Pairing, tournament: Tournament): Battle = {
+    create(pairing.a.id, pairing.b.id, tournament.id)
   }
 
   def setResult(battleid: Long, result: Int) {

@@ -12,6 +12,12 @@ case class Elo(val id: Long, val player: Long, val battle: Long, val elo: Double
 
 object Elo {
 
+  val DEFAULT = 1200F
+
+  def calculate(player: Player, battle: Battle) : Float = {
+    1200F
+  }
+
   /**
    * The rowparser
    */
@@ -24,21 +30,27 @@ object Elo {
     }
   }
 
+  def getById(id: Long): Elo = {
+    DB.withConnection {
+      implicit c =>
+        SQL("SELECT * FROM elo WHERE id={id}").on("id" -> id).as(elo *).head
+    }
+  }
+
   def allForPlayer(player: Long): List[Elo] = DB.withConnection {
     implicit c =>
       SQL("SELECT * FROM elo WHERE player={player}").on("player" -> player).as(elo *)
   }
 
-  def win(winner: Player, battle: Battle) = {
-
+  def create(player: Player, elo: Float) {
+    DB.withConnection {
+      implicit c =>
+        SQL("INSERT INTO elo (player, elo) VALUES ({player},{elo})").on(
+          "player" -> player.id, "elo" -> elo).executeUpdate()
+    }
   }
 
-  def draw(player: Player, battle: Battle) = {
-
-  }
-
-  def lose(loser: Player, battle: Battle) = {
-
-  }
+  def getCurrent(player: Player): Elo =
+    allForPlayer(player.id).last
 
 }

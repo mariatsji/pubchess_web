@@ -61,7 +61,7 @@ object Tournament {
       SQL("SELECT * FROM tournament").as(tournament *)
   }
 
-  def getOne(id: Long): Tournament = DB.withConnection {
+  def getById(id: Long): Tournament = DB.withConnection {
     implicit c =>
       SQL("SELECT * FROM tournament WHERE id={id}").on("id" -> id).as(tournament *).head
   }

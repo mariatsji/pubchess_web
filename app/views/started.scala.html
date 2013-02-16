@@ -8,7 +8,7 @@
 		<ul>
 		@battles.map { battle =>
             <li>
-                @Player.getOne(battle.white) vs @Player.getOne(battle.black)
+                @Player.getById(battle.white) vs @Player.getById(battle.black)
                 <input type="radio" name="winner" value="white">White</input>
                 <input type="radio" name="winner" value="draw">Draw</input>
                 <input type="radio" name="winner" value="black">Black</input>

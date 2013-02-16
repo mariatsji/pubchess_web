@@ -28,12 +28,15 @@ object Player {
       SQL("SELECT * FROM PLAYER").as(player *)
   }
 
-  def create(name: String) {
+  def create(name: String): Long = {
     DB.withConnection {
       implicit c =>
         SQL("INSERT INTO PLAYER (name) VALUES ({name})").on(
-          "name" -> name).executeUpdate()
+          "name" -> name).executeInsert()
     }
+  } match {
+    case Some(primaryKey: Long) => primaryKey
+    case None => -1
   }
 
   def delete(id: Long) {
@@ -50,11 +53,11 @@ object Player {
     }
   }
 
-  def getSome(ids: List[Long]): List[Player] = {
+  def getByIds(ids: List[Long]): List[Player] = {
     Player.all().filter(p => ids.contains(p.id))
   }
 
-  def getOne(id: Long): Player = {
+  def getById(id: Long): Player = {
     DB.withConnection {
       implicit c =>
         SQL("SELECT * FROM PLAYER WHERE id={id}").on("id"->id).as(player *).head

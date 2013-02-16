@@ -30,16 +30,4 @@ object Pelo {
       SQL("SELECT * FROM pelo WHERE player={player}").on("player" -> player).as(pelo *)
   }
 
-  def win(winner: Player, battle: Battle) = {
-
-  }
-
-  def draw(player: Player, battle: Battle) = {
-
-  }
-
-  def lose(loser: Player, battle: Battle) = {
-
-  }
-
 }

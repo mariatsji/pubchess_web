@@ -13,7 +13,7 @@ object ChessApplication extends Controller {
   }
 
   def battles(tournamentId: Long) = Action {
-    Ok(views.html.start(Tournament.getOne(tournamentId), Battle.allInTournament(tournamentId)))
+    Ok(views.html.started(Tournament.getById(tournamentId), Battle.allInTournament(tournamentId)))
   }
 
   val playerForm = Form("name" -> nonEmptyText)
@@ -22,7 +22,8 @@ object ChessApplication extends Controller {
     playerForm.bindFromRequest.fold(
       errors => BadRequest("Bad request " + errors),
       name => {
-        Player.create(name)
+        val playerId = Player.create(name)
+        Elo.create(Player.getById(playerId), Elo.DEFAULT)
         Redirect(routes.ChessApplication.players())
       })
   }
@@ -39,11 +40,11 @@ object ChessApplication extends Controller {
     } catch {
       case e: NoSuchElementException => List()
     }
-    val tournament = Tournament.getOne(tournamentId)
-    val pairings = Tournament.createSinglePairings(Player.getSome(playerIds))
-    val battles = Battle.createBattles(pairings, tournament).flatten
+    val tournament = Tournament.getById(tournamentId)
+    val pairings = Tournament.createSinglePairings(Player.getByIds(playerIds))
+    val battles = Battle.createBattles(pairings, tournament)
     if (battles.length > 0) {
-      Ok(views.html.start(Tournament.getOne(tournamentId), battles))
+      Ok(views.html.started(Tournament.getById(tournamentId), battles))
     } else {
       Ok("No battles were generated, did you select any players?")
     }
@@ -59,7 +60,7 @@ object ChessApplication extends Controller {
   }
 
   def addPlayers(id: Long) = Action {
-    Ok(views.html.addplayers(Player.all(), Tournament.getOne(id)))
+    Ok(views.html.addplayers(Player.all(), Tournament.getById(id)))
   }
 
   val tournamentForm = Form("name" -> nonEmptyText)
