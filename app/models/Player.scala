@@ -36,7 +36,9 @@ object Player {
     }
   } match {
     case Some(primaryKey: Long) => primaryKey
-    case None => -1
+    case None => throw new Exception(
+      "SQL Error - Did not save PlayerL"
+    )
   }
 
   def delete(id: Long) {

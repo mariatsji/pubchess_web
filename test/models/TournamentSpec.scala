@@ -15,64 +15,54 @@ class TournamentSpec extends Specification {
     "contain 10 pairings" in {
       pairings must have size (10)
     }
-    "contain pairings between 1 and 2" in {
-      pairings(0).a mustEqual (p1)
-      pairings(0).b mustEqual (p2)
+    "contain no pairing where white player is black player" in {
+      pairings.filter((p: Pairing) => p.a == p.b).size must beEqualTo(0)
     }
-    "contain pairings between 1 and 3" in {
-      pairings(1).a mustEqual (p1)
-      pairings(1).b mustEqual (p3)
+    "contain an equal number of pairings for all players" in {
+      pairingsForPlayer(p1, pairings) must beEqualTo(4)
+      pairingsForPlayer(p2, pairings) must beEqualTo(4)
+      pairingsForPlayer(p3, pairings) must beEqualTo(4)
+      pairingsForPlayer(p4, pairings) must beEqualTo(4)
+      pairingsForPlayer(p5, pairings) must beEqualTo(4)
     }
-    "contain pairings between 1 and 4" in {
-      pairings(2).a mustEqual (p1)
-      pairings(2).b mustEqual (p4)
-    }
-    "contain pairings between 1 and 5" in {
-      pairings(3).a mustEqual (p1)
-      pairings(3).b mustEqual (p5)
-    }
-    "contain pairings between 2 and 3" in {
-      pairings(4).a mustEqual (p2)
-      pairings(4).b mustEqual (p3)
-    }
-    "contain pairings between 2 and 4" in {
-      pairings(5).a mustEqual (p2)
-      pairings(5).b mustEqual (p4)
-    }
-    "contain pairings between 2 and 5" in {
-      pairings(6).a mustEqual (p2)
-      pairings(6).b mustEqual (p5)
-    }
-    "contain pairings between 3 and 4" in {
-      pairings(7).a mustEqual (p3)
-      pairings(7).b mustEqual (p4)
-    }
-    "contain pairings between 3 and 5" in {
-      pairings(8).a mustEqual (p3)
-      pairings(8).b mustEqual (p5)
-    }
-    "contain pairings between 4 and 5" in {
-      pairings(9).a mustEqual (p4)
-      pairings(9).b mustEqual (p5)
+    "contain exactly same number of white as black matches for all players" in {
+      whitePairingsForPlayer(p1, pairings) must beEqualTo(blackPairingsForPlayer(p1, pairings))
+      whitePairingsForPlayer(p2, pairings) must beEqualTo(blackPairingsForPlayer(p2, pairings))
+      whitePairingsForPlayer(p3, pairings) must beEqualTo(blackPairingsForPlayer(p3, pairings))
+      whitePairingsForPlayer(p4, pairings) must beEqualTo(blackPairingsForPlayer(p4, pairings))
+      whitePairingsForPlayer(p5, pairings) must beEqualTo(blackPairingsForPlayer(p5, pairings))
     }
   }
 
-  "single tournament createPairings" should {
-    "create even numbered tournament" in {
-      val p1 = new Player(1, "a")
-      val p2 = new Player(2, "b")
-      val players = List(p1, p2)
-      val pairings = Tournament.createSinglePairings(players)
-      "be of size 1" in {
-        pairings must have size (1)
-      }
-      "contain pairing between 1 and 2" in {
-        pairings(0).a mustEqual (p1)
-        pairings(0).b mustEqual (p2)
-      }
+  "single tournament createPairings even numbered tournament" should {
+    val p1 = new Player(1, "1")
+    val p2 = new Player(2, "2")
+    val p3 = new Player(3, "3")
+    val p4 = new Player(4, "4")
+    val players = List(p1, p2, p3, p4)
+    val pairings = Tournament.createSinglePairings(players)
+    "contain 6 pairings" in {
+      pairings must have size (6)
+    }
+    "contain no pairing where white player is black player" in {
+      pairings.filter((p: Pairing) => p.a == p.b).size must beEqualTo(0)
+    }
+    "contain an equal number of pairings for all players" in {
+      pairingsForPlayer(p1, pairings) must beEqualTo(3)
+      pairingsForPlayer(p2, pairings) must beEqualTo(3)
+      pairingsForPlayer(p3, pairings) must beEqualTo(3)
+      pairingsForPlayer(p4, pairings) must beEqualTo(3)
+    }
+    "contain roughly the same number of white as black matches for all players" in {
+      whitePairingsForPlayer(p1, pairings) must beCloseTo(blackPairingsForPlayer(p1, pairings), 1)
+      whitePairingsForPlayer(p2, pairings) must beCloseTo(blackPairingsForPlayer(p2, pairings), 1)
+      whitePairingsForPlayer(p3, pairings) must beCloseTo(blackPairingsForPlayer(p3, pairings), 1)
+      whitePairingsForPlayer(p4, pairings) must beCloseTo(blackPairingsForPlayer(p4, pairings), 1)
     }
   }
-  "tournament with 1 player" should {
+
+
+    "tournament with 1 player" should {
     "not crash" in {
       val pairings = Tournament.createSinglePairings(List(new Player(1, "a")))
       "not crash" in {
@@ -97,30 +87,20 @@ class TournamentSpec extends Specification {
     "be size 6" in {
       pairings must have size (6)
     }
-    "contain 1 and 2" in {
-      pairings(0).a mustEqual (p1)
-      pairings(0).b mustEqual (p2)
-    }
-    "contain 1 and 3" in {
-      pairings(1).a mustEqual (p1)
-      pairings(1).b mustEqual (p3)
-    }
-    "contain 2 and 3" in {
-      pairings(2).a mustEqual (p2)
-      pairings(2).b mustEqual (p3)
-    }
-    "contain 2 and 1" in {
-      pairings(3).a mustEqual (p2)
-      pairings(3).b mustEqual (p1)
-    }
-    "contain 3 and 1" in {
-      pairings(4).a mustEqual (p3)
-      pairings(4).b mustEqual (p1)
-    }
-    "contain 3 and 2" in {
-      pairings(5).a mustEqual (p3)
-      pairings(5).b mustEqual (p2)
-    }
+  }
+
+  private def whitePairingsForPlayer(player: Player, pairings: List[Pairing]): Int = {
+    pairings.foldLeft[Int](0)(
+      (sum: Int, pairing: Pairing) => if (pairing.a.id == player.id) sum + 1 else sum
+    )
+  }
+
+  private def blackPairingsForPlayer(player: Player, pairings: List[Pairing]): Int = {
+    whitePairingsForPlayer(player, pairings.map(_.swapped()))
+  }
+
+  private def pairingsForPlayer(player: Player, pairings: List[Pairing]): Int = {
+    whitePairingsForPlayer(player, pairings) + blackPairingsForPlayer(player, pairings)
   }
 
 }
