@@ -48,4 +48,38 @@ class EloSpec extends Specification {
     }
   }
 
+  "Two wins against unequally rated players" should {
+    "give more Elo for win against strong player" in {
+      running(FakeApplication()) {
+        //player
+        Player.create("Player Under Test")
+        //strong
+        Player.create("Strong player")
+        //weak
+        Player.create("Weak player")
+        Tournament.create("test", new java.util.Date())
+        //make palyer 2 strong and 3 weak
+        val battle1 = Battle.create(new Pairing(Player.getById(2), Player.getById(3)), Tournament.getById(1))
+        val battle2 = Battle.create(new Pairing(Player.getById(2), Player.getById(3)), Tournament.getById(1))
+        val battle3 = Battle.create(new Pairing(Player.getById(2), Player.getById(3)), Tournament.getById(1))
+        val battle4 = Battle.create(new Pairing(Player.getById(2), Player.getById(3)), Tournament.getById(1))
+        val battle5 = Battle.create(new Pairing(Player.getById(2), Player.getById(3)), Tournament.getById(1))
+        val battle6 = Battle.create(new Pairing(Player.getById(2), Player.getById(3)), Tournament.getById(1))
+        val battle7 = Battle.create(new Pairing(Player.getById(2), Player.getById(3)), Tournament.getById(1))
+        val battle8 = Battle.create(new Pairing(Player.getById(2), Player.getById(3)), Tournament.getById(1))
+        val battles = List(battle1, battle2, battle3, battle4, battle5, battle6, battle7, battle8)
+        1 to 8 foreach(Battle.setResult(_, Outcome.WHITE_WIN))
+
+        //win against weak
+        val smallBattle = new Battle(1, 3, Outcome.WHITE_WIN, 1)
+        val smallWin = Elo.calculate(Player.getById(1), Player.getById(3), smallBattle)._1
+        //win against strong
+        val bigBattle = new Battle(1, 2, Outcome.WHITE_WIN, 1)
+        val bigWin = Elo.calculate(Player.getById(1), Player.getById(2), bigBattle)._1
+
+        bigWin must beGreaterThan(smallWin)
+      }
+    }
+  }
+
 }

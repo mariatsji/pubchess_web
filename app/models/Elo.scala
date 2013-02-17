@@ -14,7 +14,16 @@ object Elo {
 
   val DEFAULT = 1200D
 
+  /**
+   * Returns a touple containing new Elo values for two players
+   * @param white Player white
+   * @param black Player black
+   * @param battle Battle from which elo change will be calculated
+   * @return
+   */
   def calculate(white: Player, black: Player, battle: Battle) : (Double,Double) = {
+    if (battle.result == Outcome.UNPLAYED) throw new Exception("Cannot calculate ELO change from unplayed battle")
+
     val whiteElo = Elo.getCurrent(white)
     val blackElo = Elo.getCurrent(black)
 
@@ -33,12 +42,10 @@ object Elo {
       sWhite = 0
       sBlack = 1
     }
+    val newEloWhite = whiteElo + (getKfactor(white) * (sWhite - eWhite))
+    val newEloBlack = blackElo + (getKfactor(black) * (sBlack - eBlack))
 
-    val x = whiteElo + (getKfactor(white) * (sWhite - eWhite))
-
-    val y = blackElo + (getKfactor(black) * (sBlack - eBlack))
-
-    (x,y)
+    (newEloWhite,newEloBlack)
   }
 
   /**
@@ -48,15 +55,11 @@ object Elo {
    * K = 10 once a player's published rating has reached 2400, and s/he has also completed events with a total of at least 30 games. Thereafter it remains permanently at 10.
    */
   def getKfactor(player: Player): Float = {
-      if (Battle.allEverMatchesForPlayer(player.id).size < 30)
-        30
-      else {
-        if(Elo.getCurrent(player) < 2400){
-          15
-        } else {
-          10
-        }
-      }
+    def playedMatches: Int = Battle.allEverMatchesForPlayer(player.id).size
+    if (playedMatches < 30) 30
+    else {
+        if(Elo.getCurrent(player) < 2400) 15 else 10
+    }
   }
 
 
