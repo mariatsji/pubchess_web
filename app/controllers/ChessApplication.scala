@@ -22,8 +22,8 @@ object ChessApplication extends Controller {
     playerForm.bindFromRequest.fold(
       errors => BadRequest("Bad request " + errors),
       name => {
-        val playerId = PlayerDB.create(name)
-        EloDB.create(PlayerDB.getById(playerId), Elo.DEFAULT)
+        val player = PlayerDB.create(name)
+        EloDB.create(player, Elo.DEFAULT)
         Redirect(routes.ChessApplication.players())
       })
   }

@@ -88,11 +88,16 @@ object EloDB {
       SQL("SELECT * FROM elo WHERE player={player}").on("player" -> playerId).as(elo *)
   }
 
-  def create(player: Player, elo: Double) {
+  def create(player: Player, elo: Double): Elo = {
     DB.withConnection {
       implicit c =>
         SQL("INSERT INTO elo (player, elo) VALUES ({player},{elo})").on(
-          "player" -> player.id, "elo" -> elo).executeUpdate()
+          "player" -> player.id, "elo" -> elo).executeInsert()
+    } match {
+      case Some(id: Long) => getById(id)
+      case None => throw new Exception(
+        "SQL Error - Did not save Battle"
+      )
     }
   }
 

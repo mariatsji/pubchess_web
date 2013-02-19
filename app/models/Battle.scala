@@ -33,7 +33,7 @@ object BattleDB {
    */
   val battle = {
     get[Long]("id") ~
-    get[Long]("white") ~
+      get[Long]("white") ~
       get[Long]("black") ~
       get[Int]("result") ~
       get[Long]("tournament") map {
@@ -62,7 +62,6 @@ object BattleDB {
       implicit c =>
         SQL("INSERT INTO battle (white,black,result,tournament) VALUES ({white}, {black}, -1, {tournament})")
           .on("white" -> white, "black" -> black).on("tournament" -> tournament).executeInsert()
-
     } match {
       case Some(id: Long) => getById(id)
       case None => throw new Exception(
