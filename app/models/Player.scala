@@ -5,13 +5,13 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 
-case class Player(val id: Long, val name: String, val currentElo: Double) {
+case class Player(id: Long, name: String, currentElo: Double) {
 
-  override def toString = name
+  override def toString = name + "(" + currentElo + ")"
 
 }
 
-object Player {
+object PlayerDB {
 
   /**
    * The rowparser
@@ -50,7 +50,7 @@ object Player {
   }
 
   def getByIds(ids: List[Long]): List[Player] = {
-    Player.all().filter(p => ids.contains(p.id))
+    PlayerDB.all().filter(p => ids.contains(p.id))
   }
 
   def getById(id: Long): Player = {

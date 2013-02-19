@@ -6,11 +6,11 @@ import play.api.db.DB
 import play.api.Play.current
 import anorm.~
 
-case class Pelo(val id: Long, val player: Long, val battle: Long, val pelo: Double) {
+case class Pelo(id: Long, player: Long, battle: Long, pelo: Double) {
 
 }
 
-object Pelo {
+object PeloDB {
 
   /**
    * The rowparser

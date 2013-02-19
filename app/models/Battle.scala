@@ -5,7 +5,7 @@ import anorm.SqlParser._
 import play.api.db._
 import play.api.Play.current
 
-class Battle(val id: Long, val white: Long, val black: Long, var result: Int, val tournament: Long) {
+case class Battle(id: Long, white: Long, black: Long, var result: Int, tournament: Long) {
 
   def setResult(i: Int) {
     result = i
@@ -20,7 +20,7 @@ object Outcome extends Enumeration {
   val BLACK_WIN = 2
 }
 
-object Battle {
+object BattleDB {
 
   def createBattles(pairs: List[Pairing], tournament: Tournament) = {
     for {
@@ -64,7 +64,7 @@ object Battle {
           .on("white" -> white, "black" -> black).on("tournament" -> tournament).executeInsert()
 
     } match {
-      case Some(id: Long) => Battle.getById(id)
+      case Some(id: Long) => getById(id)
       case None => throw new Exception(
         "SQL Error - Did not save Battle"
       )

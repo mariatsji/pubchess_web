@@ -45,6 +45,10 @@ object Tournament {
   def createPairings(players: List[Player], double: Boolean) =
     if (double) createDoublePairings(players) else createSinglePairings(players)
 
+}
+
+  object TournamentDB {
+
   /**
    * The rowparser
    */

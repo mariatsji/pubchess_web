@@ -6,7 +6,7 @@ import play.api.db.DB
 import play.api.Play.current
 import anorm.~
 
-case class Elo(id: Long, val player: Long, val battle: Long, val elo: Double) {
+case class Elo(id: Long, player: Long, battle: Long, elo: Double) {
 
 }
 
@@ -24,8 +24,8 @@ object Elo {
   def calculate(white: Player, black: Player, battle: Battle) : (Double,Double) = {
     if (battle.result == Outcome.UNPLAYED) throw new Exception("Cannot calculate ELO change from unplayed battle")
 
-    val whiteElo = Elo.getCurrent(white)
-    val blackElo = Elo.getCurrent(black)
+    val whiteElo = EloDB.getCurrent(white)
+    val blackElo = EloDB.getCurrent(black)
 
     val qWhite = math.pow(10, whiteElo / 400)
     val qBlack = math.pow(10, blackElo / 400)
@@ -55,14 +55,15 @@ object Elo {
    * K = 10 once a player's published rating has reached 2400, and s/he has also completed events with a total of at least 30 games. Thereafter it remains permanently at 10.
    */
   def getKfactor(player: Player): Float = {
-    def playedMatches: Int = Battle.allEverMatchesForPlayer(player.id).size
+    def playedMatches: Int = BattleDB.allEverMatchesForPlayer(player.id).size
     if (playedMatches < 30) 30
     else {
-        if(Elo.getCurrent(player) < 2400) 15 else 10
+        if(EloDB.getCurrent(player) < 2400) 15 else 10
     }
   }
+}
 
-
+object EloDB {
   /**
    * The rowparser
    */
