@@ -7,8 +7,13 @@ import play.api.Play.current
 
 case class Battle(id: Long, white: Long, black: Long, var result: Int, tournament: Long) {
 
-  def setResult(i: Int) {
-    result = i
+  def finish(outcome: Int) {
+    BattleDB.setResult(this.id, outcome)
+    val white = PlayerDB.getById(this.white)
+    val black = PlayerDB.getById(this.black)
+    val elo = Elo.calculate(white.currentElo, black.currentElo, outcome, EloDB.getKfactor(white), EloDB.getKfactor(black))
+    PlayerDB.update(white.id, white.name, elo._1)
+    PlayerDB.update(black.id, black.name, elo._2)
   }
 
 }
@@ -88,6 +93,5 @@ object BattleDB {
 
     }
   }
-
 
 }

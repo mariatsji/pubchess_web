@@ -6,36 +6,36 @@ import play.api.db.DB
 import play.api.Play.current
 import anorm.~
 
-case class Elo(id: Long, player: Long, battle: Long, elo: Double) {
+case class Elo(id: Long, player: Long, battle: Long, elo: Float) {
 
 }
 
 object Elo {
 
-  val DEFAULT = 1200D
+  val DEFAULT = 1200F
 
-  def calculate(whiteElo: Double, blackElo: Double, outcome: Int, kFactorWhite: Long, kFactorBlack: Long) : (Double,Double) = {
-    val qWhite = math.pow(10, whiteElo / 400)
-    val qBlack = math.pow(10, blackElo / 400)
+  def calculate(whiteElo: Float, blackElo: Float, outcome: Int, kFactorWhite: Long, kFactorBlack: Long) : (Float,Float) = {
+    val qWhite = getQValue(whiteElo)
+    val qBlack = getQValue(blackElo)
 
     val eWhite = qWhite / (qWhite + qBlack)
     val eBlack = qBlack / (qWhite + qBlack)
 
-    var sWhite = 0.5
-    var sBlack = 0.5
-    if (outcome == Outcome.WHITE_WIN) {
-      sWhite = 1
-      sBlack = 0
-    } else if (outcome == Outcome.BLACK_WIN) {
-      sWhite = 0
-      sBlack = 1
-    }
-    val newEloWhite = whiteElo + (kFactorWhite * (sWhite - eWhite))
-    val newEloBlack = blackElo + (kFactorBlack * (sBlack - eBlack))
+    val newEloWhite = whiteElo + (kFactorWhite * (getSValue(outcome)._1 - eWhite))
+    val newEloBlack = blackElo + (kFactorBlack * (getSValue(outcome)._2 - eBlack))
 
     (newEloWhite,newEloBlack)
   }
 
+  private def getQValue(elo: Float):Float = math.pow(10, elo / 400).toFloat
+
+  private def getSValue(outcome: Int): (Float,Float) =
+    if (outcome == Outcome.WHITE_WIN)
+      (1f,0f)
+    else if (outcome == Outcome.BLACK_WIN)
+      (0f,1f)
+    else
+      (0.5f, 0.5f)
 }
 
 object EloDB {
@@ -47,7 +47,7 @@ object EloDB {
     get[Long]("player") ~
     get[Long]("battle") ~
     get[Double]("elo") map {
-      case id ~ player ~ battle ~ elo => Elo(id, player, battle, elo)
+      case id ~ player ~ battle ~ elovalue => Elo(id, player, battle, elovalue.toFloat)
     }
   }
 
@@ -82,7 +82,7 @@ object EloDB {
    * K = 15 as long as a player's rating remains under 2400.
    * K = 10 once a player's published rating has reached 2400, and s/he has also completed events with a total of at least 30 games. Thereafter it remains permanently at 10.
    */
-  def getKfactor(player: Player): Float = {
+  def getKfactor(player: Player): Long = {
     def playedMatches: Int = BattleDB.allEverMatchesForPlayer(player.id).size
     if (playedMatches < 30) 30
     else {

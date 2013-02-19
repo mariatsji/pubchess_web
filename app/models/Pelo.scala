@@ -6,7 +6,7 @@ import play.api.db.DB
 import play.api.Play.current
 import anorm.~
 
-case class Pelo(id: Long, player: Long, battle: Long, pelo: Double) {
+case class Pelo(id: Long, player: Long, battle: Long, pelo: Float) {
 
 }
 
@@ -20,7 +20,7 @@ object PeloDB {
       get[Long]("player") ~
       get[Long]("battle") ~
       get[Double]("pelo") map {
-      case id ~ player ~ battle ~ pelo => Pelo(id, player, battle, pelo)
+      case id ~ player ~ battle ~ pelovalue => Pelo(id, player, battle, pelovalue.toFloat)
     }
   }
 

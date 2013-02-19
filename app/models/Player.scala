@@ -5,9 +5,19 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 
-case class Player(id: Long, name: String, currentElo: Double) {
+case class Player(id: Long, name: String, currentElo: Float) {
 
   override def toString = name + "(" + currentElo + ")"
+
+}
+
+object Player {
+
+  def create(name: String): Player = {
+    val player = PlayerDB.insert(name)
+    EloDB.create(player, Elo.DEFAULT)
+    player
+  }
 
 }
 
@@ -20,7 +30,7 @@ object PlayerDB {
     get[Long]("id") ~
       get[String]("name") ~
       get[Double]("currentElo") map {
-      case id ~ name ~ currentElo => Player(id, name, currentElo)
+      case id ~ name ~ currentElo => Player(id, name, currentElo.toFloat)
     }
   }
 
@@ -29,7 +39,7 @@ object PlayerDB {
       SQL("SELECT * FROM PLAYER").as(player *)
   }
 
-  def create(name: String): Player = {
+  def insert(name: String): Player = {
     DB.withConnection {
       implicit c =>
         SQL("INSERT INTO PLAYER (name, currentElo) VALUES ({name}, {currentElo})").on(
@@ -46,6 +56,13 @@ object PlayerDB {
     DB.withConnection {
       implicit c =>
         SQL("DELETE FROM PLAYER WHERE id = {id}").on("id" -> id).executeUpdate()
+    }
+  }
+
+  def update(id: Long, name: String, currentElo: Double) {
+    DB.withConnection { implicit c =>
+      SQL("UPDATE PLAYER SET name={name}, currentElo={currentElo} WHERE id={id}").
+        on("id" -> id, "name" -> name, "currentElo" -> currentElo).executeUpdate()
     }
   }
 
