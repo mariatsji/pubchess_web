@@ -12,7 +12,7 @@ class EloSpec extends Specification {
         Player.create("1")
         Player.create("2")
         Tournament.create("test", new java.util.Date())
-        val whiteWin = new Battle(1, 2, Outcome.WHITE_WIN, 1)
+        val whiteWin = new Battle(1, 1, 2, Outcome.WHITE_WIN, 1)
         Elo.calculate(Player.getById(1), Player.getById(2), whiteWin)._1 must beGreaterThan(Elo.DEFAULT)
       }
     }
@@ -21,7 +21,7 @@ class EloSpec extends Specification {
         Player.create("1")
         Player.create("2")
         Tournament.create("test", new java.util.Date())
-        val whiteWin = new Battle(1, 2, Outcome.WHITE_WIN, 1)
+        val whiteWin = new Battle(1, 1, 2, Outcome.WHITE_WIN, 1)
         Elo.calculate(Player.getById(1), Player.getById(2), whiteWin)._2 must beLessThan(Elo.DEFAULT)
       }
     }
@@ -33,7 +33,7 @@ class EloSpec extends Specification {
         Player.create("1")
         Player.create("2")
         Tournament.create("test", new java.util.Date())
-        val whiteWin = new Battle(1, 2, Outcome.DRAW, 1)
+        val whiteWin = new Battle(1, 1, 2, Outcome.DRAW, 1)
         Elo.calculate(Player.getById(1), Player.getById(2), whiteWin)._1 must beEqualTo(Elo.DEFAULT)
       }
     }
@@ -42,7 +42,7 @@ class EloSpec extends Specification {
         Player.create("1")
         Player.create("2")
         Tournament.create("test", new java.util.Date())
-        val whiteWin = new Battle(1, 2, Outcome.DRAW, 1)
+        val whiteWin = new Battle(1, 1, 2, Outcome.DRAW, 1)
         Elo.calculate(Player.getById(1), Player.getById(2), whiteWin)._2 must beEqualTo(Elo.DEFAULT)
       }
     }
@@ -71,10 +71,10 @@ class EloSpec extends Specification {
         1 to 8 foreach(Battle.setResult(_, Outcome.WHITE_WIN))
 
         //win against weak
-        val smallBattle = new Battle(1, 3, Outcome.WHITE_WIN, 1)
+        val smallBattle = new Battle(1, 1, 3, Outcome.WHITE_WIN, 1)
         val smallWin = Elo.calculate(Player.getById(1), Player.getById(3), smallBattle)._1
         //win against strong
-        val bigBattle = new Battle(1, 2, Outcome.WHITE_WIN, 1)
+        val bigBattle = new Battle(1, 1, 2, Outcome.WHITE_WIN, 1)
         val bigWin = Elo.calculate(Player.getById(1), Player.getById(2), bigBattle)._1
 
         bigWin must beGreaterThan(smallWin)

@@ -1,27 +1,9 @@
 package models
 
-import play.api.db._
-import play.api.Play.current
-import anorm._
-import anorm.SqlParser._
-import scala.util.Random
-
 case class Pairing(var a: Player, var b: Player) {
 
-  override def toString() = {
-    a + " paired with " + b
-  }
-
-  def swap(): Pairing = {
-    new Pairing(this.b, this.a)
-  }
-
-  def swapped(): Pairing = swap()
-
-}
-
-object Pairing {
-
-  def shuffle(pairings: List[Pairing]) = Random.shuffle(pairings)
+  override def toString = a + " paired with " + b
+  def swap() = new Pairing(this.b, this.a)
+  def swapped() = swap()
 
 }

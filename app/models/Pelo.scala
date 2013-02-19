@@ -6,7 +6,6 @@ import play.api.db.DB
 import play.api.Play.current
 import anorm.~
 
-
 case class Pelo(val id: Long, val player: Long, val battle: Long, val pelo: Double) {
 
 }

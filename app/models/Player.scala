@@ -5,7 +5,7 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 
-case class Player(val id: Long, val name: String) {
+case class Player(val id: Long, val name: String, val currentElo: Double) {
 
   override def toString = name
 
@@ -18,8 +18,9 @@ object Player {
    */
   val player = {
     get[Long]("id") ~
-      get[String]("name") map {
-      case id ~ name => Player(id, name)
+      get[String]("name") ~
+        get[Double]("currentElo") map {
+      case id ~ name ~ currentElo => Player(id, name, currentElo)
     }
   }
 
@@ -31,8 +32,8 @@ object Player {
   def create(name: String): Long = {
     DB.withConnection {
       implicit c =>
-        SQL("INSERT INTO PLAYER (name) VALUES ({name})").on(
-          "name" -> name).executeInsert()
+        SQL("INSERT INTO PLAYER (name, currentElo) VALUES ({name}, {currentElo})").on(
+          "name" -> name, "currentElo" -> Elo.DEFAULT).executeInsert()
     }
   } match {
     case Some(primaryKey: Long) => primaryKey
@@ -45,13 +46,6 @@ object Player {
     DB.withConnection {
       implicit c =>
         SQL("DELETE FROM PLAYER WHERE id = {id}").on("id" -> id).executeUpdate()
-    }
-  }
-
-  def update(id: Long, name: String) {
-    DB.withConnection {
-      implicit c =>
-        SQL("UPDATE PLAYER SET name={name} WHERE id={id}").on("id" -> id, "name" -> name).executeUpdate()
     }
   }
 

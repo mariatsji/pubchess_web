@@ -5,11 +5,11 @@ import org.specs2.mutable._
 class TournamentSpec extends Specification {
 
   "single tournament createPairings uneven numbered tournament" should {
-    val p1 = new Player(1, "1")
-    val p2 = new Player(2, "2")
-    val p3 = new Player(3, "3")
-    val p4 = new Player(4, "4")
-    val p5 = new Player(5, "5")
+    val p1 = new Player(1, "1", Elo.DEFAULT)
+    val p2 = new Player(2, "2", Elo.DEFAULT)
+    val p3 = new Player(3, "3", Elo.DEFAULT)
+    val p4 = new Player(4, "4", Elo.DEFAULT)
+    val p5 = new Player(5, "5", Elo.DEFAULT)
     val players = List(p1, p2, p3, p4, p5)
     val pairings = Tournament.createSinglePairings(players)
     "contain 10 pairings" in {
@@ -35,10 +35,10 @@ class TournamentSpec extends Specification {
   }
 
   "single tournament createPairings even numbered tournament" should {
-    val p1 = new Player(1, "1")
-    val p2 = new Player(2, "2")
-    val p3 = new Player(3, "3")
-    val p4 = new Player(4, "4")
+    val p1 = new Player(1, "1", Elo.DEFAULT)
+    val p2 = new Player(2, "2", Elo.DEFAULT)
+    val p3 = new Player(3, "3", Elo.DEFAULT)
+    val p4 = new Player(4, "4", Elo.DEFAULT)
     val players = List(p1, p2, p3, p4)
     val pairings = Tournament.createSinglePairings(players)
     "contain 6 pairings" in {
@@ -64,7 +64,7 @@ class TournamentSpec extends Specification {
 
     "tournament with 1 player" should {
     "not crash" in {
-      val pairings = Tournament.createSinglePairings(List(new Player(1, "a")))
+      val pairings = Tournament.createSinglePairings(List(new Player(1, "a", Elo.DEFAULT)))
       "not crash" in {
         pairings must have size (0)
       }
@@ -72,7 +72,7 @@ class TournamentSpec extends Specification {
   }
   "tournament with 0 players" should {
     "not crash" in {
-      val pairings = Tournament.createSinglePairings(List(new Player(1, "a")))
+      val pairings = Tournament.createSinglePairings(List(new Player(1, "a", Elo.DEFAULT)))
       "not crash" in {
         pairings must have size (0)
       }
@@ -80,9 +80,9 @@ class TournamentSpec extends Specification {
   }
 
   "double tournament" should {
-    val p1 = new Player(1, "1")
-    val p2 = new Player(2, "2")
-    val p3 = new Player(3, "3")
+    val p1 = new Player(1, "1", Elo.DEFAULT)
+    val p2 = new Player(2, "2", Elo.DEFAULT)
+    val p3 = new Player(3, "3", Elo.DEFAULT)
     val pairings = Tournament.createDoublePairings(List(p1, p2, p3))
     "be size 6" in {
       pairings must have size (6)

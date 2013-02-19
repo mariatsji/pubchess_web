@@ -5,9 +5,7 @@ import anorm.SqlParser._
 import play.api.db._
 import play.api.Play.current
 
-class Battle(val white: Long, val black: Long, var result: Int, val tournament: Long) {
-
-  def this(p: Pairing, t: Tournament) = this(p.a.id, p.b.id, Outcome.UNPLAYED, t.id)
+class Battle(val id: Long, val white: Long, val black: Long, var result: Int, val tournament: Long) {
 
   def setResult(i: Int) {
     result = i
@@ -34,11 +32,12 @@ object Battle {
    * The rowparser
    */
   val battle = {
+    get[Long]("id") ~
     get[Long]("white") ~
       get[Long]("black") ~
       get[Int]("result") ~
       get[Long]("tournament") map {
-      case white ~ black ~ result ~ tournament => new Battle(white, black, result, tournament)
+      case id ~ white ~ black ~ result ~ tournament => new Battle(id, white, black, result, tournament)
     }
   }
 
