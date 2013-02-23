@@ -6,7 +6,7 @@ import play.api.db.DB
 import play.api.Play.current
 import anorm.~
 
-case class Elo(id: Long, player: Long, battle: Long, elo: Float) {
+case class Elo(id: Long, player: Long, battle: Option[Long], elo: Float) {
 
 }
 
@@ -45,7 +45,7 @@ object EloDB {
   val elo = {
     get[Long]("id") ~
     get[Long]("player") ~
-    get[Long]("battle") ~
+    get[Option[Long]]("battle") ~
     get[Double]("elo") map {
       case id ~ player ~ battle ~ elovalue => Elo(id, player, battle, elovalue.toFloat)
     }
@@ -63,16 +63,23 @@ object EloDB {
       SQL("SELECT * FROM elo WHERE player={player}").on("player" -> playerId).as(elo *)
   }
 
-  def create(player: Player, elo: Double): Elo = {
+  def create(player: Player, battle: Option[Battle], elo: Double): Elo = {
     DB.withConnection {
       implicit c =>
-        SQL("INSERT INTO elo (player, elo) VALUES ({player},{elo})").on(
-        "player" -> player.id, "elo" -> elo).executeInsert()
+        battle match {
+          case Some(b) =>
+            SQL("INSERT INTO elo (player, battle, elo) VALUES ({player},{battle},{elo})").on(
+              "player" -> player.id, "battle" -> b.id, "elo" -> elo).executeInsert()
+          case None  =>
+            SQL("INSERT INTO elo (player, elo) VALUES ({player},{elo})").on(
+              "player" -> player.id, "elo" -> elo).executeInsert()
+        }
+
     } match {
       case Some(id: Long) => getById(id)
       case None => throw new Exception(
-      "SQL Error - Did not save Battle"
-    )
+        "SQL Error - Did not save Battle"
+      )
     }
   }
 

@@ -14,6 +14,8 @@ case class Battle(id: Long, white: Long, black: Long, var result: Int, tournamen
     val elo = Elo.calculate(white.currentElo, black.currentElo, outcome, EloDB.getKfactor(white), EloDB.getKfactor(black))
     PlayerDB.update(white.id, white.name, elo._1)
     PlayerDB.update(black.id, black.name, elo._2)
+    EloDB.create(white, Some(this), elo._1)
+    EloDB.create(black, Some(this), elo._2)
   }
 
 }

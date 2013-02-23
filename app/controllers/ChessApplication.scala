@@ -23,7 +23,7 @@ object ChessApplication extends Controller {
       errors => BadRequest("Bad request " + errors),
       name => {
         val player = Player.create(name)
-        EloDB.create(player, Elo.DEFAULT)
+        EloDB.create(player, None, Elo.DEFAULT)
         Redirect(routes.ChessApplication.players())
       })
   }

@@ -15,7 +15,7 @@ object Player {
 
   def create(name: String): Player = {
     val player = PlayerDB.insert(name)
-    EloDB.create(player, Elo.DEFAULT)
+    EloDB.create(player, None, Elo.DEFAULT)
     player
   }
 
