@@ -12,34 +12,30 @@ object Tournament {
 
   def createDoublePairings(players: List[Player]): List[Pairing] = {
     val single = createSinglePairings(players)
-    single ++ single.map(_.swapped())
+    single ::: single.map(_.swapped)
   }
 
   def createSinglePairings(players: List[Player]): List[Pairing] = {
     chopFromBothEnds(swapEveryOther(naivePairs(players)))
   }
 
-  private def naivePairs(players: List[Player]): List[Pairing] = {
-    for {
-      white <- players
-      black <- players.dropWhile(_ != white)
-      if (white != black)
-    } yield new Pairing(white, black)
-  }
+  private def naivePairs(players: List[Player]): List[Pairing] =
+    if(players.size > 1)
+      players.map{
+        (p: Player) => new Pairing(players.head, p)
+      }.filter(pairing =>pairing.a != pairing.b) ::: naivePairs(players.tail)
+    else
+      Nil
 
   private def swapEveryOther(pairs: List[Pairing]): List[Pairing] = {
     pairs.map((p: Pairing) => if (pairs.indexOf(p) % 2 == 0) p.swapped() else p)
   }
 
-  private def chopFromBothEnds(pairs: List[Pairing]): List[Pairing] = {
-    def recursive(pairz: List[Pairing], buffer: List[Pairing]): List[Pairing] =
-      if (pairz.isEmpty)
-        buffer
-      else {
-        val reversed = pairz.reverse
-        recursive(reversed.tail, (buffer :+ reversed.head))
-      }
-    recursive(pairs, List[Pairing]())
+  private def chopFromBothEnds[A](pairs: List[A]): List[A] = {
+    if (pairs.isEmpty)
+      Nil
+    else
+      pairs.head :: chopFromBothEnds(pairs.tail.reverse)
   }
 
   def createPairings(players: List[Player], double: Boolean) =

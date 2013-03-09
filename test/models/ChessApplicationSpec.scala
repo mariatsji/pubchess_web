@@ -84,7 +84,6 @@ class ChessApplicationSpec extends Specification {
         EloDB.allForPlayer(player2.id) must be size(2)
       }
     }
-
   }
 
 }
