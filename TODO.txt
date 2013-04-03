@@ -1,5 +1,9 @@
 - started.scala.html 
 	
+	-> select players -> turnering -> maa:
+		- lagre ned selected players til turnering
+		- hente opp all info pr side load ved turnering
+	-> redirect tilbake til turnering ved 'save' pr match
 	-> button 'save' lagrer ned all info
 	-> button 'results' viser resultater (ferdig eller uferdig, med link
 	tilbake til turneringen som spilles)

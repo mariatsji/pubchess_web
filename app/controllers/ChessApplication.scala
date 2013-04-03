@@ -33,8 +33,8 @@ object ChessApplication extends Controller {
       case "black" => Outcome.BLACK_WIN
       case "draw" => Outcome.DRAW
     }
-    battle.finish(outcome)
-    Ok(myTuple._1 + " , " + myTuple._2 + " , " + myTuple._3)
+    battle.finish(outcome, myTuple._2.toInt, myTuple._1.toInt)
+    Ok("Saved " + outcome + " with # beers white : " + myTuple._2 + " and # beers black : " + myTuple._1)
   }
 
   val playerForm = Form("name" -> nonEmptyText)
