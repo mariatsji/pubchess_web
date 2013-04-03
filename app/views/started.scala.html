@@ -9,18 +9,20 @@
 		@battles.map { battle =>
             <li>
                 @PlayerDB.getById(battle.white) vs @PlayerDB.getById(battle.black)
-                <input type="radio" name="winner" value="white">White</input>
-                <input type="radio" name="winner" value="draw">Draw</input>
-                <input type="radio" name="winner" value="black">Black</input>
-                <input type="text" id="whitebeers" name="whitebeers"/>
-                <label for="whitebeers">#Beers White</label>
-                <input type="text" id="blackbeers" name="blackbeers"/>
-                <label for="blackbeers">#Beers Black</label>
-
+                @form(routes.ChessApplication.saveResult(battle.id.toString())) {
+                    <input type="radio" name="winner" value="white">White</input>
+                    <input type="radio" name="winner" value="draw">Draw</input>
+                    <input type="radio" name="winner" value="black">Black</input>
+                    <input type="text" id="whitebeers" name="whitebeers"/>
+                    <label for="whitebeers">#Beers White</label>
+                    <input type="text" id="blackbeers" name="blackbeers"/>
+                    <label for="blackbeers">#Beers Black</label>
+                    <input type="submit" value="Save"/>
+                }
             </li>
         }
 		</ul>
-        <input type="submit" value="Save"/>
+
 	</p>
 
 

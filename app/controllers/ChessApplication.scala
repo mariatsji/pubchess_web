@@ -12,8 +12,22 @@ object ChessApplication extends Controller {
     Ok(views.html.players(PlayerDB.all(), playerForm))
   }
 
+  val setResultForm = Form(tuple(
+      "blackbeers" -> text,
+      "whitebeers" -> text,
+      "winner" -> text
+    )
+  )
+
   def battles(tournamentId: Long) = Action {
-    Ok(views.html.started(TournamentDB.getById(tournamentId), BattleDB.allInTournament(tournamentId)))
+    Ok(
+      views.html.started(TournamentDB.getById(tournamentId), BattleDB.allInTournament(tournamentId))
+    )
+  }
+
+  def saveResult(battleId: String) = Action { implicit request =>
+    val myTuple: (String, String, String) = setResultForm.bindFromRequest().get
+    Ok(myTuple._1 + " , " + myTuple._2 + " , " + myTuple._3)
   }
 
   val playerForm = Form("name" -> nonEmptyText)

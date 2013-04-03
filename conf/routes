@@ -20,7 +20,8 @@ GET		/addplayers/:id			controllers.ChessApplication.addPlayers(id: Long)
 
 # Start tournament
 
-GET		/starttournament/:id	controllers.ChessApplication.startTournamentSingle(id: Long)
-POST	/starttournament/:id	controllers.ChessApplication.battles(id: Long)
+GET		/starttournament/:id	        controllers.ChessApplication.startTournamentSingle(id: Long)
+POST	/starttournament/:id	        controllers.ChessApplication.battles(id: Long)
+POST	/starttournament/saveresult/:id	controllers.ChessApplication.saveResult(id)
 
 GET     /assets/*file           controllers.Assets.at(path="/public", file)

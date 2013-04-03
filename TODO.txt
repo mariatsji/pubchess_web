@@ -1,0 +1,16 @@
+- started.scala.html 
+	
+	-> button 'save' lagrer ned all info
+	-> button 'results' viser resultater (ferdig eller uferdig, med link
+	tilbake til turneringen som spilles)
+		-> 'ny runde' med reverse matcher
+
+
+design/improvement:
+	- ulikt abstraksjonsnivå i metodesignaturer. primitiver vs objekter.
+	- send med form til websidene, ikke bare returner ett til kontroller
+		som tilfeldigvis matcher formet du trenger..
+
+bugs:
+- start-tournament flere ganger, appender i databasen(?)
+	-> trykk f5 etter spillere er addet..

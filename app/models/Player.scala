@@ -7,7 +7,7 @@ import anorm.SqlParser._
 
 case class Player(id: Long, name: String, currentElo: Float) {
 
-  override def toString = name + "(" + currentElo + ")"
+  override def toString = name + " (" + currentElo + ")"
 
 }
 
