@@ -8,6 +8,8 @@ CREATE TABLE battle (
 	white integer not null,
 	black integer not null,
 	result integer default -1,
+	whitebeers integer default -1,
+	blackbeers integer default -1,
 	tournament integer not null,
 );
 

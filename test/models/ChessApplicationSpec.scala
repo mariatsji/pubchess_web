@@ -57,7 +57,7 @@ class ChessApplicationSpec extends Specification {
         val player2 = Player.create("test 2")
         val tournament = TournamentDB.create("test tournament", new Date())
         val battle = BattleDB.create(player1.id, player2.id, tournament.id)
-        BattleDB.setResult(battle.id, Outcome.BLACK_WIN)
+        BattleDB.setResult(battle.id, -1, -1, Outcome.BLACK_WIN)
         val battleFound = BattleDB.getById(battle.id)
         battleFound.result must beEqualTo(Outcome.BLACK_WIN)
       }

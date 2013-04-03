@@ -27,6 +27,13 @@ object ChessApplication extends Controller {
 
   def saveResult(battleId: String) = Action { implicit request =>
     val myTuple: (String, String, String) = setResultForm.bindFromRequest().get
+    val battle: Battle = BattleDB.getById(battleId.toLong)
+    val outcome = myTuple._3 match {
+      case "white" => Outcome.WHITE_WIN
+      case "black" => Outcome.BLACK_WIN
+      case "draw" => Outcome.DRAW
+    }
+    battle.finish(outcome)
     Ok(myTuple._1 + " , " + myTuple._2 + " , " + myTuple._3)
   }
 
@@ -62,11 +69,6 @@ object ChessApplication extends Controller {
     } else {
       Ok("No battles were generated, did you select any players?")
     }
-  }
-
-  def setResult(battle: Battle) = Action {
-    implicit request =>
-      Ok("Awesome")
   }
 
   def tournaments = Action {

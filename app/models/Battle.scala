@@ -7,8 +7,8 @@ import play.api.Play.current
 
 case class Battle(id: Long, white: Long, black: Long, var result: Int, tournament: Long) {
 
-  def finish(outcome: Int) {
-    BattleDB.setResult(this.id, outcome)
+  def finish(outcome: Int, whitebeers: Int = -1, blackbeers: Int = -1) {
+    BattleDB.setResult(this.id, whitebeers, blackbeers, outcome)
     val white = PlayerDB.getById(this.white)
     val black = PlayerDB.getById(this.black)
     val elo = Elo.calculate(white.currentElo, black.currentElo, outcome, EloDB.getKfactor(white), EloDB.getKfactor(black))
@@ -88,10 +88,14 @@ object BattleDB {
     create(pairing.a.id, pairing.b.id, tournament.id)
   }
 
-  def setResult(battleid: Long, result: Int) {
+  def setResult(battleid: Long, whitebeers: Int, blackbeers: Int, result: Int) {
     DB.withConnection {
       implicit c =>
-        SQL("UPDATE battle SET result={result} WHERE id={battleid}").on("result" -> result).on("battleid" -> battleid).executeUpdate()
+        SQL("UPDATE battle SET whitebeers={wb}, blackbeers={bb}, result={result} WHERE id={battleid}").
+          on("result" -> result).
+          on("battleid" -> battleid).
+          on("wb" -> whitebeers).
+          on("bb" -> blackbeers).executeUpdate()
 
     }
   }
