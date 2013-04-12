@@ -80,6 +80,12 @@ object ChessApplication extends Controller {
     }
   }
 
+  def standings(tournamentId: Long) = Action {
+    Ok(views.html.standings(TournamentDB.getById(tournamentId),
+      Tournament.standings(TournamentDB.getById(tournamentId)))
+    )
+  }
+
   def tournaments = Action {
     Ok(views.html.tournaments(TournamentDB.all(), tournamentForm))
   }

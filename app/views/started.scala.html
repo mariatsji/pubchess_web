@@ -37,6 +37,12 @@
 
 	</p>
 
+    <p>
+        @form(routes.ChessApplication.standings(tournament.id)) {
+            <input type="submit" value="Standings"/>
+        }
+    </p>
+
     @if(Tournament.isCompleted(tournament)){
         <p>
         @form(routes.ChessApplication.addReverseMatches(tournament.id)) {

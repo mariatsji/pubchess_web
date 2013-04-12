@@ -53,6 +53,13 @@ object Tournament {
     battles.filter(b => b.result == (-1)).size==0
   }
 
+  def standings(tournament: Tournament) : List[Player] = {
+    val battles: List[Battle] = BattleDB.allInTournament(tournament.id)
+    //TODO
+    battles.map((b : Battle) =>
+      PlayerDB.getById(b.white): Player).toList
+  }
+
 }
 
 object TournamentDB {
