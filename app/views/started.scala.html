@@ -37,5 +37,12 @@
 
 	</p>
 
+    @if(Tournament.isCompleted(tournament)){
+        <p>
+        @form(routes.ChessApplication.addReverseMatches(tournament.id)) {
+            <input type="submit" value="Create Rematches" />
+        }
+        </p>
+    }
 
 }

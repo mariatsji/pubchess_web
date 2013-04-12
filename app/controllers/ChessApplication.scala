@@ -33,9 +33,16 @@ object ChessApplication extends Controller {
       case "black" => Outcome.BLACK_WIN
       case "draw" => Outcome.DRAW
     }
-    battle.finish(outcome, myTuple._2.toInt, myTuple._1.toInt)
-    //Ok("Saved " + outcome + " with # beers white : " + myTuple._2 + " and # beers black : " + myTuple._1)
-    Redirect(routes.ChessApplication.startTournamentSingle(battle.tournament))
+    val whiteBeers = myTuple._2.toInt
+    val blackBeers = myTuple._1.toInt
+    battle.finish(outcome, whiteBeers, blackBeers)
+    Redirect(routes.ChessApplication.startTournament(battle.tournament))
+  }
+
+  def addReverseMatches(tournamentId: Long) = Action { implicit request =>
+    val battles: List[Battle] = BattleDB.allInTournament(tournamentId)
+    Tournament.makeRematches(battles)
+    Redirect(routes.ChessApplication.startTournament(battles.head.tournament))
   }
 
   val playerForm = Form("name" -> nonEmptyText)
@@ -55,7 +62,7 @@ object ChessApplication extends Controller {
     Redirect(routes.ChessApplication.players())
   }
 
-  def startTournamentSingle(tournamentId: Long) = Action { implicit request =>
+  def startTournament(tournamentId: Long) = Action { implicit request =>
     val playerIdsFromRequest: List[Long] = try {
       request.queryString("selectedplayers").map(
         s => s.toLong).toList

@@ -12,7 +12,7 @@ object Tournament {
 
   def createDoublePairings(players: List[Player]): List[Pairing] = {
     val single = createSinglePairings(players)
-    single ::: single.map(_.swapped)
+    single ::: single.map(_.swapped())
   }
 
   def createSinglePairings(players: List[Player]): List[Pairing] = {
@@ -40,6 +40,18 @@ object Tournament {
 
   def createPairings(players: List[Player], double: Boolean) =
     if (double) createDoublePairings(players) else createSinglePairings(players)
+
+  def makeRematches(battles: List[Battle]) : List[Battle] = {
+    val pairings: List[Pairing] = battles.map(_.getPairing())
+    val tournament = TournamentDB.getById(battles.head.tournament)
+    val reversePairings: List[Pairing] = pairings.map(_.swapped())
+    BattleDB.createBattles(reversePairings, tournament)
+  }
+
+  def isCompleted(tournament: Tournament) : Boolean = {
+    val battles: List[Battle] = BattleDB.allInTournament(tournament.id)
+    battles.filter(b => b.result == (-1)).size==0
+  }
 
 }
 

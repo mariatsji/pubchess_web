@@ -6,7 +6,7 @@
 	<p>(@tournament.played)</p>
 
 	<p>
-	@form(routes.ChessApplication.startTournamentSingle(tournament.id)) {
+	@form(routes.ChessApplication.startTournament(tournament.id)) {
 		<select name="selectedplayers" multiple="multiple">
 			@players.map { player =>
 				<option value="@player.id">@player.name</option>

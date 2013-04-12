@@ -18,6 +18,7 @@ case class Battle(id: Long, white: Long, black: Long, var result: Int, tournamen
     EloDB.create(black, Some(this), elo._2)
   }
 
+  def getPairing() : Pairing = new Pairing(PlayerDB.getById(white), PlayerDB.getById(black))
 }
 
 object Outcome extends Enumeration {
