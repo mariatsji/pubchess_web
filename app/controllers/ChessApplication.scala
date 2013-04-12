@@ -34,7 +34,8 @@ object ChessApplication extends Controller {
       case "draw" => Outcome.DRAW
     }
     battle.finish(outcome, myTuple._2.toInt, myTuple._1.toInt)
-    Ok("Saved " + outcome + " with # beers white : " + myTuple._2 + " and # beers black : " + myTuple._1)
+    //Ok("Saved " + outcome + " with # beers white : " + myTuple._2 + " and # beers black : " + myTuple._1)
+    Redirect(routes.ChessApplication.startTournamentSingle(battle.tournament))
   }
 
   val playerForm = Form("name" -> nonEmptyText)
@@ -55,19 +56,20 @@ object ChessApplication extends Controller {
   }
 
   def startTournamentSingle(tournamentId: Long) = Action { implicit request =>
-    val playerIds: List[Long] = try {
+    val playerIdsFromRequest: List[Long] = try {
       request.queryString("selectedplayers").map(
         s => s.toLong).toList
     } catch {
       case e: NoSuchElementException => List()
     }
     val tournament = TournamentDB.getById(tournamentId)
-    val pairings = Tournament.createSinglePairings(PlayerDB.getByIds(playerIds))
-    val battles = BattleDB.createBattles(pairings, tournament)
-    if (battles.length > 0) {
+    if (!playerIdsFromRequest.isEmpty) {
+      val pairings = Tournament.createSinglePairings(PlayerDB.getByIds(playerIdsFromRequest))
+      val battles = BattleDB.createBattles(pairings, tournament)
       Ok(views.html.started(TournamentDB.getById(tournamentId), battles))
     } else {
-      Ok("No battles were generated, did you select any players?")
+      val battles: List[Battle] = BattleDB.allInTournament(tournamentId)
+      Ok(views.html.started(TournamentDB.getById(tournamentId), battles))
     }
   }
 
