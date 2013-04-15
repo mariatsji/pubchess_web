@@ -84,6 +84,19 @@ class ChessApplicationSpec extends Specification {
         EloDB.allForPlayer(player2.id) must be size(2)
       }
     }
+    "create standings for the players in tournament" in {
+      running(FakeApplication()) {
+        val player1 = Player.create("test 1")
+        val player2 = Player.create("test 2")
+        val player3 = Player.create("test 3")
+        val tournament = TournamentDB.create("test tournament", new Date())
+        val battle1 = BattleDB.create(player1.id, player2.id, tournament.id)
+        val battle2 = BattleDB.create(player2.id, player3.id, tournament.id)
+        battle1.finish(Outcome.BLACK_WIN)
+        battle2.finish(Outcome.DRAW)
+        Tournament.standings(tournament) must be size(3)
+      }
+    }
   }
 
 }

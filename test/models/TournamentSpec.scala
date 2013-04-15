@@ -18,7 +18,7 @@ class TournamentSpec extends Specification {
     "contain no pairing where white player is black player" in {
       pairings.filter((p: Pairing) => p.a == p.b).size must beEqualTo(0)
     }
-    "contain an equal number of pairings for all players" in {
+    "contain an equal number of pairings foplayerr all players" in {
       pairingsForPlayer(p1, pairings) must beEqualTo(4)
       pairingsForPlayer(p2, pairings) must beEqualTo(4)
       pairingsForPlayer(p3, pairings) must beEqualTo(4)

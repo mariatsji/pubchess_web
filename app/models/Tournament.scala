@@ -5,6 +5,7 @@ import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 import java.util.Date
+import scala.collection.immutable.HashSet
 
 case class Tournament(id: Long, desc: String, var played: Date)
 
@@ -53,11 +54,44 @@ object Tournament {
     battles.filter(b => b.result == (-1)).size==0
   }
 
-  def standings(tournament: Tournament) : List[Player] = {
-    val battles: List[Battle] = BattleDB.allInTournament(tournament.id)
-    //TODO
-    battles.map((b : Battle) =>
-      PlayerDB.getById(b.white): Player).toList
+  def standings(tournament: Tournament) : List[(Player, Float)] = {
+    standings(BattleDB.allInTournament(tournament.id))
+  }
+
+  def standings(battles: List[Battle]) : List[(Player, Float)] = {
+    val allPlayers: List[Player] = distinct(battles)
+    val allPoints: List[Float] = allPlayers.map(points(_, battles))
+    allPlayers.zip(allPoints)
+  }
+
+  private def distinct(battles: List[Battle]) : List[Player] = {
+    val whites: List[Long] = battles.map((b: Battle) => b.white)
+    val blacks: List[Long] = battles.map((b: Battle) => b.black)
+    val all = whites ::: blacks
+    val allSet: HashSet[List[Long]] = HashSet(all)
+    PlayerDB.getByIds(allSet.toList.flatten)
+  }
+
+  private def points(player: Player, battles : List[Battle]) : Float = {
+    val matchesForPlayer: List[Battle] = battles.filter((b: Battle) => b.white == player.id || b.black == player.id)
+    matchesForPlayer.foldLeft(0f)((r,c) => r + matchPoint(player, c))
+  }
+
+  private def matchPoint(player: Player, battle: Battle) : Float = {
+    if(battle.result == 0) {
+      0.5
+    }
+    if(player.id == battle.white) {
+      if (battle.result == 1)
+        1
+      else
+        0
+    } else {
+      if(battle.result == 2)
+        1
+      else
+        0
+    }
   }
 
 }

@@ -1,15 +1,15 @@
-@(tournament: Tournament, players: List[Player])
+@(tournament: Tournament, standings: List[(Player, Float)])
 @import helper._
 
 @main("Tournament Standings") {
 
     <h1>Tournament standings for @tournament.desc</h1>
 
-        <ul>
-    @players.map { player =>
-        <li>@player.name (@player.currentElo)</li>
+    <ul>
+    @standings.map { standing =>
+        <li>@standing._1.name (@standing._1.currentElo) <strong>@standing._2</strong></li>
     }
-        </ul>
+    </ul>
 
     <p>
         Continue playing : <a href="@routes.ChessApplication.startTournament(tournament.id)">@tournament.desc</a>
