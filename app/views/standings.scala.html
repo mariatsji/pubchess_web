@@ -1,4 +1,4 @@
-@(tournament: Tournament, standings: List[(Player, Float)])
+@(tournament: Tournament, standings: List[Standing])
 @import helper._
 
 @main("Tournament Standings") {
@@ -7,7 +7,7 @@
 
     <ul>
     @standings.map { standing =>
-        <li>@standing._1.name (@standing._1.currentElo) <strong>@standing._2</strong></li>
+        <li>@standing.getPlayer.name (@standing.getPlayer.currentElo) <strong>@standing.getPoints</strong></li>
     }
     </ul>
 

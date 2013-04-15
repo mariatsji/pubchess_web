@@ -1,9 +1,9 @@
 - started.scala.html 
 
-	-> standings
-	-> button 'results' viser resultater (ferdig eller uferdig, med link
-	tilbake til turneringen som spilles)
-
+	- vis statistikk på spillere
+	- permanent db!
+	- autentisering
+	- styling
 
 design/improvement:
 	- ulikt abstraksjonsnivå i metodesignaturer. primitiver vs objekter.
@@ -11,5 +11,6 @@ design/improvement:
 		som tilfeldigvis matcher formet du trenger..
 
 bugs:
+- save result flere ganger endrer ELO!
 - start-tournament flere ganger, appender i databasen(?)
 	-> trykk f5 etter spillere er addet..

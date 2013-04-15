@@ -6,8 +6,18 @@ import anorm._
 import anorm.SqlParser._
 import java.util.Date
 import scala.collection.immutable.HashSet
+import scala.util.Sorting
 
 case class Tournament(id: Long, desc: String, var played: Date)
+
+class Standing(player: Player, points: Float) extends Ordered[Standing] {
+
+  def getPoints = points
+  def getPlayer = player
+
+  def compare(that: Standing) = (that.getPoints*2).toInt - (this.getPoints*2).toInt
+
+}
 
 object Tournament {
 
@@ -54,15 +64,21 @@ object Tournament {
     battles.filter(b => b.result == (-1)).size==0
   }
 
-  def standings(tournament: Tournament) : List[(Player, Float)] = {
-    standings(BattleDB.allInTournament(tournament.id))
+  def standings(tournament: Tournament) : List[Standing] = {
+    val s: List[Standing] = standings(BattleDB.allInTournament(tournament.id))
+    val standingArray: Array[Standing] = s.toArray
+    Sorting.quickSort(standingArray)
+    standingArray.toList
   }
 
-  def standings(battles: List[Battle]) : List[(Player, Float)] = {
+  def standings(battles: List[Battle]) : List[Standing] = {
     val allPlayers: List[Player] = distinct(battles)
     val allPoints: List[Float] = allPlayers.map(points(_, battles))
-    allPlayers.zip(allPoints)
+    val zipped: List[(Player, Float)] = allPlayers.zip(allPoints)
+    zipped.map(makeStanding)
   }
+
+  private def makeStanding(t: (Player, Float)) : Standing = new Standing(t._1, t._2)
 
   private def distinct(battles: List[Battle]) : List[Player] = {
     val whites: List[Long] = battles.map((b: Battle) => b.white)
@@ -78,20 +94,25 @@ object Tournament {
   }
 
   private def matchPoint(player: Player, battle: Battle) : Float = {
-    if(battle.result == 0) {
-      0.5
+    if(battle.result == 0)
+      0.5f
+    else {
+      if(player.id == battle.white) {
+        if (battle.result == 1)
+          1f
+        else
+          0f
+      } else {
+        if(battle.result == 2)
+          1f
+        else
+          0f
+      }
     }
-    if(player.id == battle.white) {
-      if (battle.result == 1)
-        1
-      else
-        0
-    } else {
-      if(battle.result == 2)
-        1
-      else
-        0
-    }
+  }
+
+  def sort(standings: List[Standing]) : List[Standing] = {
+    standings
   }
 
 }
