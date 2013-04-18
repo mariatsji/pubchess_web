@@ -148,7 +148,7 @@ object TournamentDB {
     } match {
       case Some(id: Long) => getById(id)
       case None => throw new Exception(
-        "SQL Error - Did not save Battle"
+        "SQL Error - Did not save Tournament"
       )
     }
   }

@@ -6,8 +6,8 @@
 GET     /                       controllers.ChessApplication.players
                                 
 # Players
-GET		/players				controllers.ChessApplication.players
 POST	/players				controllers.ChessApplication.newPlayer
+POST	/players/:id			controllers.ChessApplication.showPlayer(id: Long)
 POST	/players/:id/delete		controllers.ChessApplication.deletePlayer(id: Long)
 
 # Tournaments
@@ -26,5 +26,8 @@ POST	/starttournament/saveresult/:id	controllers.ChessApplication.saveResult(id)
 
 # Standings
 GET     /standings/:id          controllers.ChessApplication.standings(id: Long)
+
+# Statistics
+GET     /statistics/:id         controllers.ChessApplication.showPlayer(id: Long)
 
 GET     /assets/*file           controllers.Assets.at(path="/public", file)

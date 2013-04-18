@@ -1,5 +1,6 @@
 - started.scala.html 
 
+	- linker rundtomkring
 	- vis statistikk på spillere
 	- permanent db!
 	- autentisering

@@ -1,0 +1,26 @@
+@(statistics: Statistics)
+@import helper._
+
+@main("Player Statistics") {
+
+        <h1>@statistics.player</h1>
+        <p>
+        <table border="1">
+            <tr><td>#wins as white</td><td>@statistics.winsAsWhite</td></tr>
+            <tr><td>#wins as black</td><td>@statistics.winsAsBlack</td></tr>
+            <tr><td>#draws as white</td><td>@statistics.drawsAsWhite</td></tr>
+            <tr><td>#draws as black</td><td>@statistics.drawsAsBlack</td></tr>
+            <tr><td>#loss as white</td><td>@statistics.lossAsWhite</td></tr>
+            <tr><td>#loss as black</td><td>@statistics.lossAsBlack</td></tr>
+            <tr><td>#battles played</td><td>@statistics.battlesPlayed</td></tr>
+            <tr><td>#current ELO</td><td>@statistics.currentElo</td></tr>
+            <tr><td>#highest ELO ever</td><td>@statistics.highestElo</td></tr>
+            <tr><td>#lowest ELO ever</td><td>@statistics.lowestElo</td></tr>
+        </table>
+
+        </p>
+
+    <p><a href="/">players</a></p>
+    <p><a href="/tournaments">tournaments</a></p>
+
+}

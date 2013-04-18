@@ -94,6 +94,11 @@ object ChessApplication extends Controller {
     Ok(views.html.addplayers(PlayerDB.all(), TournamentDB.getById(id)))
   }
 
+  def showPlayer(id: Long) = Action {
+    val statistics = new Statistics(PlayerDB.getById(id));
+    Ok(views.html.playerstats(statistics))
+  }
+
   val tournamentForm = Form("name" -> nonEmptyText)
 
   def newTournament = Action { implicit request =>
